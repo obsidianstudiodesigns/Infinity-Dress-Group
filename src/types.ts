@@ -111,6 +111,11 @@ export interface StyleTutorial {
   name: string;
   category: 'Classic' | 'Bra-Friendly' | 'Backless' | 'One-Shoulder' | 'Sleeved';
   difficulty: 'Easy' | 'Intermediate' | 'Advanced';
+  images: {
+    front: string;
+    back: string;
+  };
+  image?: string;
   steps: string[];
   tips: string;
   braFriendly: boolean;

@@ -7,6 +7,18 @@ import classicMeshImg from '../assets/images/classic_mesh_red_1787132246413.jpg'
 import kiaraImg from '../assets/images/kiara_infinity_dress_1787132284347.jpg';
 import vintageWrapImg from '../assets/images/vintage_wrap_blue_1787132313065.jpg';
 import landingHeroImg from '../assets/images/infinity_landing_hero_1787132163967.jpg';
+import styleHalterImg from '../assets/images/style_halter_neck_1787143138976.jpg';
+import styleHalterBackImg from '../assets/images/style_halter_back_1787143805382.jpg';
+import styleOneShoulderImg from '../assets/images/style_one_shoulder_1787143156062.jpg';
+import styleOneShoulderBackImg from '../assets/images/style_one_shldr_bk_1787143820364.jpg';
+import styleCapSleeveImg from '../assets/images/style_cap_sleeve_1787143171856.jpg';
+import styleCapSleeveBackImg from '../assets/images/style_capslv_back_1787143835690.jpg';
+import styleCrossFrontImg from '../assets/images/style_cross_front_1787143848081.jpg';
+import styleCrossBackImg from '../assets/images/style_cross_back_1787143183376.jpg';
+import styleTwistFrontImg from '../assets/images/style_twist_front_1787143200263.jpg';
+import styleTwistBackImg from '../assets/images/style_twist_back_1787143861428.jpg';
+import styleStraplessImg from '../assets/images/style_strapless_1787143214595.jpg';
+import styleStraplessBackImg from '../assets/images/style_strpls_back_1787143875038.jpg';
 
 export { landingHeroImg, landingHeroImg as HERO_IMAGE, STYLE_TUTORIALS as WRAPPING_STYLES };
 
@@ -251,6 +263,11 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'The Classic Halter',
     category: 'Classic',
     difficulty: 'Easy',
+    image: styleHalterImg,
+    images: {
+      front: styleHalterImg,
+      back: styleHalterBackImg,
+    },
     steps: [
       'Step 1: Pull both long straps straight up over your shoulders, smoothing across the bust.',
       'Step 2: Cross both straps behind the nape of your neck.',
@@ -267,6 +284,11 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'Grecian One-Shoulder',
     category: 'One-Shoulder',
     difficulty: 'Easy',
+    image: styleOneShoulderImg,
+    images: {
+      front: styleOneShoulderImg,
+      back: styleOneShoulderBackImg,
+    },
     steps: [
       'Step 1: Take both straps over one shoulder together (left or right).',
       'Step 2: Twist the straps gently along the shoulder crest for a draped roman effect.',
@@ -283,6 +305,11 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'Cap Sleeve Sweetheart',
     category: 'Sleeved',
     difficulty: 'Intermediate',
+    image: styleCapSleeveImg,
+    images: {
+      front: styleCapSleeveImg,
+      back: styleCapSleeveBackImg,
+    },
     steps: [
       'Step 1: Drape both straps widely across the tops of your shoulders down towards your upper arms.',
       'Step 2: Spread fabric evenly to create soft, romantic cap sleeves.',
@@ -299,6 +326,11 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'Cross-Back Butterfly',
     category: 'Backless',
     difficulty: 'Intermediate',
+    image: styleCrossBackImg,
+    images: {
+      front: styleCrossFrontImg,
+      back: styleCrossBackImg,
+    },
     steps: [
       'Step 1: Bring straps over shoulders, keeping them wide across the front décolletage.',
       'Step 2: Form a bold X cross over your mid-back.',
@@ -315,6 +347,11 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'Twist-Front Plunge',
     category: 'Classic',
     difficulty: 'Easy',
+    image: styleTwistFrontImg,
+    images: {
+      front: styleTwistFrontImg,
+      back: styleTwistBackImg,
+    },
     steps: [
       'Step 1: Take straps over shoulders and do 2-3 firm twists right at the chest collarbone.',
       'Step 2: Spread the twisted straps so they lay flat down the back.',
@@ -331,8 +368,13 @@ export const STYLE_TUTORIALS: StyleTutorial[] = [
     name: 'Strapless Goddess Wrap',
     category: 'Bra-Friendly',
     difficulty: 'Intermediate',
+    image: styleStraplessImg,
+    images: {
+      front: styleStraplessImg,
+      back: styleStraplessBackImg,
+    },
     steps: [
-      'Step 1: Slip into the matching bandeau tube top (included in add-ons).',
+      'Step 1: Slip into the matching bandeau tube top (Contact for more info on bandeau tube top).',
       'Step 2: Bring both dress straps under your arms to the back (bypassing shoulders).',
       'Step 3: Cross at back, wrap multiple times snugly around torso/underbust.',
       'Step 4: Knot securely at the back.',
