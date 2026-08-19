@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart } from 'lucide-react';
-import { ColorSwatch, DressLength, DressSize, LengthOption, Product, ProductAddOn } from '../types';
-import { COLOR_SWATCHES, LENGTH_OPTIONS, STANDARD_ADD_ONS, COMPANY_DETAILS } from '../data/products';
+import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart, Palette } from 'lucide-react';
+import { ColorSwatch, DressSize, Product } from '../types';
+import { COLOR_SWATCHES, LENGTH_OPTIONS, COMPANY_DETAILS } from '../data/products';
 import { CURRENCIES } from '../utils/order';
 
 interface ProductModalProps {
@@ -14,9 +14,8 @@ interface ProductModalProps {
     image: string;
     color: ColorSwatch;
     size: DressSize;
-    length: LengthOption;
-    bridesmaidName?: string;
-    addOns: ProductAddOn[];
+    length: typeof LENGTH_OPTIONS['maxi'];
+    addOns: any[];
     quantity: number;
     unitPriceZar: number;
     totalPriceZar: number;
@@ -35,27 +34,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [activeImage, setActiveImage] = useState<string>(product.images.front);
   const [selectedColor, setSelectedColor] = useState<ColorSwatch>(COLOR_SWATCHES[0]);
   const [selectedSize, setSelectedSize] = useState<DressSize>('M (36-38)');
-  const [selectedLengthKey, setSelectedLengthKey] = useState<DressLength>('maxi');
-  const [selectedAddOns, setSelectedAddOns] = useState<ProductAddOn[]>([]);
-  const [bridesmaidName, setBridesmaidName] = useState<string>('');
   const [quantity, setQuantity] = useState<number>(1);
   const [customBustWaist, setCustomBustWaist] = useState<string>('');
 
   const currencyFormatter = CURRENCIES['ZAR'].format;
-  const currentLength = LENGTH_OPTIONS[selectedLengthKey];
+  const standardLength = LENGTH_OPTIONS['maxi'];
 
-  // Calculate Unit Price
-  const addOnsTotal = selectedAddOns.reduce((acc, a) => acc + a.priceZar, 0);
-  const unitPrice = product.basePriceZar + currentLength.priceModifierZar + addOnsTotal;
+  // Unit and Total Price
+  const unitPrice = product.basePriceZar;
   const totalPrice = unitPrice * quantity;
-
-  const toggleAddOn = (addon: ProductAddOn) => {
-    if (selectedAddOns.some((a) => a.id === addon.id)) {
-      setSelectedAddOns(selectedAddOns.filter((a) => a.id !== addon.id));
-    } else {
-      setSelectedAddOns([...selectedAddOns, addon]);
-    }
-  };
 
   const handleAddToCart = () => {
     onAddToCart({
@@ -64,9 +51,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       image: product.images.front,
       color: selectedColor,
       size: selectedSize === 'Custom Measurements' && customBustWaist ? (`Custom (${customBustWaist})` as any) : selectedSize,
-      length: currentLength,
-      bridesmaidName: bridesmaidName.trim() || undefined,
-      addOns: selectedAddOns,
+      length: standardLength,
+      addOns: [],
       quantity,
       unitPriceZar: unitPrice,
       totalPriceZar: totalPrice,
@@ -75,7 +61,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   const handleDirectWhatsApp = () => {
-    const text = `Hello! I would like to order the *${product.name}*:\n\n• Color: ${selectedColor.name}\n• Size: ${selectedSize}\n• Length: ${currentLength.name}\n${bridesmaidName ? `• For: ${bridesmaidName}\n` : ''}${selectedAddOns.length ? `• Add-ons: ${selectedAddOns.map((a) => a.name).join(', ')}\n` : ''}• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
+    const text = `Hello! I would like to order the *${product.name}*:\n\n• Color: ${selectedColor.name}\n• Size: ${selectedSize === 'Custom Measurements' && customBustWaist ? `Custom (${customBustWaist})` : selectedSize}\n• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
     const url = `https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -98,7 +84,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="relative bg-white text-stone-800 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
+        className="relative bg-white text-stone-800 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
@@ -122,32 +108,53 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh] grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Left Column: Image Previews */}
-          <div className="md:col-span-5 space-y-3">
-            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-rose-50/40 border border-rose-100">
+          {/* Left Column: Interactive Image Preview with Dynamic Color Tint */}
+          <div className="md:col-span-6 space-y-3">
+            <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-rose-50/40 border border-rose-100 shadow-inner group">
+              {/* Base Dress Photograph */}
               <img
                 src={activeImage}
                 alt={product.name}
-                className="w-full h-full object-cover object-top"
+                className="w-full h-full object-cover object-top transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
+
+              {/* Dynamic Live Color Overlay Layers */}
               <div
-                className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold text-white shadow-xs"
+                className="absolute inset-0 pointer-events-none transition-all duration-500 mix-blend-color opacity-75"
                 style={{ backgroundColor: selectedColor.hex }}
-              >
-                {selectedColor.name}
+              />
+              <div
+                className="absolute inset-0 pointer-events-none transition-all duration-500 mix-blend-multiply opacity-20"
+                style={{ backgroundColor: selectedColor.hex }}
+              />
+
+              {/* Live Color Swatch Floating Pill */}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                <div
+                  className="px-3 py-1 rounded-full text-[11px] font-bold text-white shadow-md flex items-center gap-1.5 backdrop-blur-xs border border-white/40"
+                  style={{ backgroundColor: selectedColor.hex }}
+                >
+                  <Palette className="w-3 h-3 text-white" />
+                  <span>{selectedColor.name}</span>
+                </div>
+              </div>
+
+              {/* Live Tint Indicator Pill */}
+              <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-xl p-2 text-center text-[11px] text-stone-700 font-medium border border-rose-100 shadow-xs pointer-events-none">
+                Live Fabric Color Preview: <strong className="text-rose-600 font-bold">{selectedColor.name}</strong>
               </div>
             </div>
 
-            {/* Thumbnail Switcher */}
+            {/* Front / Back View Switcher */}
             {product.images.back && (
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setActiveImage(product.images.front)}
-                  className={`p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                     activeImage === product.images.front
-                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold'
+                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold shadow-2xs'
                       : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
                   }`}
                 >
@@ -157,9 +164,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveImage(product.images.back!)}
-                  className={`p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                     activeImage === product.images.back
-                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold'
+                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold shadow-2xs'
                       : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
                   }`}
                 >
@@ -174,22 +181,22 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <span>280gsm Anti-Crease Heavy Knit</span>
               </div>
               <p className="text-[11px] text-stone-500 leading-tight">
-                No ironing required. Flattering opacity and drape guaranteed.
+                Flattering opacity and drape guaranteed with matching dye-lot.
               </p>
             </div>
           </div>
 
-          {/* Right Column: Customization Options */}
-          <div className="md:col-span-7 space-y-5 text-xs">
+          {/* Right Column: Customization (Colors & Size) */}
+          <div className="md:col-span-6 space-y-6 text-xs">
             {/* 1. Color Swatches Selection */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">
-                  1. Choose Color Swatch: <span className="text-rose-600 font-semibold">{selectedColor.name}</span>
+                  1. Choose Dress Colour: <span className="text-rose-600 font-bold">{selectedColor.name}</span>
                 </label>
               </div>
 
-              <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-28 overflow-y-auto p-1 bg-rose-50/30 rounded-lg border border-rose-100">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-48 overflow-y-auto p-1.5 bg-rose-50/30 rounded-xl border border-rose-100">
                 {COLOR_SWATCHES.map((swatch) => {
                   const isSelected = selectedColor.id === swatch.id;
                   return (
@@ -197,73 +204,41 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                       key={swatch.id}
                       type="button"
                       onClick={() => setSelectedColor(swatch)}
-                      className={`h-9 rounded-md relative flex items-center justify-center border transition-all ${
+                      className={`h-11 rounded-lg relative flex flex-col items-center justify-center border transition-all cursor-pointer ${
                         isSelected
-                          ? 'border-rose-600 ring-2 ring-rose-300 scale-105 shadow-xs'
+                          ? 'border-rose-600 ring-2 ring-rose-400 scale-105 shadow-md z-10'
                           : 'border-stone-200 hover:scale-105'
                       }`}
                       style={{ backgroundColor: swatch.hex }}
                       title={swatch.name}
                     >
-                      {isSelected && <Check className="w-3.5 h-3.5 text-white drop-shadow-md" />}
+                      {isSelected && <Check className="w-4 h-4 text-white drop-shadow-md" />}
+                      <span className="text-[9px] text-white font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] truncate max-w-full px-1 mt-0.5">
+                        {swatch.name.split('/')[0]}
+                      </span>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* 2. Dress Length */}
-            <div>
-              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2">
-                2. Select Length (Waist-to-Hem)
-              </label>
-
-              <div className="grid grid-cols-2 gap-2">
-                {(Object.entries(LENGTH_OPTIONS) as [DressLength, LengthOption][]).map(([key, opt]) => {
-                  const isSelected = selectedLengthKey === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setSelectedLengthKey(key)}
-                      className={`p-2.5 rounded-lg border text-left transition-all ${
-                        isSelected
-                          ? 'border-rose-500 bg-rose-50/80 text-rose-900 ring-1 ring-rose-400'
-                          : 'border-rose-100 bg-white text-stone-700 hover:border-rose-300'
-                      }`}
-                    >
-                      <div className="font-bold">{opt.name}</div>
-                      <div className="text-[11px] text-stone-500 mt-0.5 flex items-center justify-between">
-                        <span>{opt.description}</span>
-                        {opt.priceModifierZar > 0 && (
-                          <span className="text-rose-600 font-semibold">
-                            +{currencyFormatter(opt.priceModifierZar)}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* 3. Dress Size */}
+            {/* 2. Dress Size */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">
-                  3. Select Size (South African)
+                  2. Select Size (South African)
                 </label>
                 <button
                   type="button"
                   onClick={onOpenSizeGuide}
-                  className="inline-flex items-center gap-1 text-rose-600 hover:text-rose-700 font-semibold text-[11px]"
+                  className="inline-flex items-center gap-1 text-rose-600 hover:text-rose-700 font-semibold text-[11px] cursor-pointer"
                 >
                   <Ruler className="w-3 h-3 text-rose-500" />
-                  <span>Size Chart / Fit Guide</span>
+                  <span>Size Chart</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {sizes.map((s) => {
                   const isSelected = selectedSize === s;
                   return (
@@ -271,7 +246,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                       key={s}
                       type="button"
                       onClick={() => setSelectedSize(s)}
-                      className={`py-2 px-1 rounded-lg border text-center font-medium transition-all ${
+                      className={`py-2.5 px-1 rounded-xl border text-center font-medium transition-all cursor-pointer ${
                         isSelected
                           ? 'border-rose-500 bg-rose-600 text-white font-bold shadow-2xs'
                           : 'border-rose-100 bg-white text-stone-700 hover:bg-rose-50'
@@ -284,69 +259,26 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               </div>
 
               {selectedSize === 'Custom Measurements' && (
-                <div className="mt-2">
+                <div className="mt-3">
                   <input
                     type="text"
                     placeholder="Enter Bust, Waist, & Waist-to-Floor cm (e.g. 96cm, 78cm, 114cm)"
                     value={customBustWaist}
                     onChange={(e) => setCustomBustWaist(e.target.value)}
-                    className="w-full bg-rose-50/50 rounded-lg px-3 py-2 text-xs text-stone-900 border border-rose-200 focus:outline-none focus:border-rose-500"
+                    className="w-full bg-rose-50/50 rounded-xl px-3 py-2 text-xs text-stone-900 border border-rose-200 focus:outline-none focus:border-rose-500"
                   />
                 </div>
               )}
             </div>
 
-            {/* 4. Bridesmaid Name Tag (Optional) */}
-            <div>
-              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-1">
-                4. Bridesmaid Name / Label (Optional)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Sarah - Maid of Honor"
-                value={bridesmaidName}
-                onChange={(e) => setBridesmaidName(e.target.value)}
-                className="w-full bg-white rounded-lg px-3 py-2 text-xs text-stone-900 border border-rose-200 focus:outline-none focus:border-rose-500"
-              />
-            </div>
-
-            {/* 5. Add-Ons Selection */}
-            <div>
-              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2">
-                5. Matching Accessories & Add-Ons
-              </label>
-
-              <div className="space-y-1.5">
-                {STANDARD_ADD_ONS.map((addon) => {
-                  const isChecked = selectedAddOns.some((a) => a.id === addon.id);
-                  return (
-                    <label
-                      key={addon.id}
-                      className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-all ${
-                        isChecked
-                          ? 'border-rose-400 bg-rose-50/70 text-rose-900'
-                          : 'border-rose-100 bg-white text-stone-700 hover:bg-rose-50/40'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => toggleAddOn(addon)}
-                          className="rounded text-rose-600 focus:ring-rose-400 border-stone-300"
-                        />
-                        <div>
-                          <div className="font-semibold text-stone-900">{addon.name}</div>
-                          <div className="text-[10px] text-stone-500">{addon.description}</div>
-                        </div>
-                      </div>
-                      <span className="font-bold text-rose-600">
-                        +{currencyFormatter(addon.priceZar)}
-                      </span>
-                    </label>
-                  );
-                })}
-              </div>
+            {/* Quality Note */}
+            <div className="p-3.5 rounded-xl bg-rose-50/50 border border-rose-100 text-stone-600 space-y-1">
+              <span className="font-bold text-stone-900 text-xs block">
+                Standard Maxi Length (110cm Floor Drape)
+              </span>
+              <p className="text-[11px] text-stone-500">
+                All dresses come standard in our classic, sweeping floor-length cut designed to wrap in over 27 styles.
+              </p>
             </div>
           </div>
         </div>
@@ -364,7 +296,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             </div>
 
             {/* Quantity Selector */}
-            <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-rose-200">
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-lg border border-rose-200">
               <button
                 type="button"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}

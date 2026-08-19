@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, Mail, MessageCircle, MapPin, Heart, ShieldCheck, Sparkles } from 'lucide-react';
+import { Phone, Mail, MessageCircle, MapPin, Heart, Sparkles } from 'lucide-react';
 import { COMPANY_DETAILS } from '../data/products';
 import { Logo } from './Logo';
 
@@ -38,7 +38,7 @@ export const Footer: React.FC = () => {
               className="px-6 py-3.5 rounded-full bg-white hover:bg-rose-50 text-stone-800 font-bold text-xs uppercase tracking-wider border border-rose-200 transition-colors flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
             >
               <Phone className="w-4 h-4 text-rose-500" />
-              <span>Call +27 61 510 7109</span>
+              <span>Call 061 510 7109</span>
             </a>
           </div>
         </div>
@@ -53,10 +53,6 @@ export const Footer: React.FC = () => {
             <p className="text-xs text-stone-600 leading-relaxed pr-6">
               THE INFINITY DRESS™ GROUP is the proud trademark holder and premier manufacturer of genuine convertible infinity dresses in South Africa and worldwide. Handcrafted in heavy 280gsm fabric for the ultimate flattering fit.
             </p>
-            <div className="flex items-center gap-2 text-xs text-rose-700 font-semibold">
-              <ShieldCheck className="w-4 h-4 text-rose-500" />
-              <span>Registered Trademark #2013/05342 (South Africa & Worldwide)</span>
-            </div>
           </div>
 
           {/* Contact Details */}
@@ -68,13 +64,13 @@ export const Footer: React.FC = () => {
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-rose-500 shrink-0" />
                 <span>
-                  <strong>Call:</strong> {COMPANY_DETAILS.phoneDisplay} / {COMPANY_DETAILS.phoneIntl}
+                  <strong>Call:</strong> {COMPANY_DETAILS.phoneDisplay}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  <strong>WhatsApp:</strong> 061 510 7109 / +27 61 510 7109
+                  <strong>WhatsApp:</strong> {COMPANY_DETAILS.phoneDisplay}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
@@ -105,7 +101,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a href="#styles" className="hover:text-rose-600 transition-colors">
-                  27+ Ways to Wrap Tutorial
+                  Ways to Wrap Tutorial
                 </a>
               </li>
               <li>
@@ -125,7 +121,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Legal Bar */}
         <div className="mt-12 pt-6 border-t border-rose-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div>
-            © {new Date().getFullYear()} {COMPANY_DETAILS.name}. All rights reserved. Registered Trademark Holder.
+            © {new Date().getFullYear()} {COMPANY_DETAILS.name}. All rights reserved.
           </div>
           <div className="flex items-center gap-1 text-rose-600">
             <span>Handcrafted with</span>

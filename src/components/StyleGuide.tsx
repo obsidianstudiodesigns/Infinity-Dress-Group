@@ -17,7 +17,7 @@ export const StyleGuide: React.FC = () => {
           </div>
 
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-stone-900">
-            27+ Ways to Wrap
+            Ways to Wrap
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-stone-600 leading-relaxed font-light">

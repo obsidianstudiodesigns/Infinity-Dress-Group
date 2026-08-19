@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
               href="#styles"
               className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
             >
-              27+ Ways to Wrap
+              Ways to Wrap
             </a>
 
             <a
@@ -137,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={() => setIsMobileMenuOpen(false)}
               className="hover:text-rose-600 py-1"
             >
-              27+ Ways to Wrap
+              Ways to Wrap
             </a>
             <a
               href="#trademark"
