@@ -21,15 +21,15 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-2xs w-full">
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
-        <div className="flex items-center justify-between h-20 gap-3 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-20 gap-4 w-full">
           {/* Brand Logo */}
           <a href="#" className="flex items-center shrink-0">
             <Logo variant="dark" />
           </a>
 
-          {/* Desktop Navigation Links - Visible on all Desktop & Laptop Screens (lg+) */}
-          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-7 text-[11px] xl:text-xs font-semibold uppercase tracking-wider text-stone-600">
+          {/* Desktop Navigation Links - Integrated with Bridal Suite & Size Guide */}
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 text-[11px] xl:text-xs font-semibold uppercase tracking-wider text-stone-600">
             <a
               href="#collection"
               className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
@@ -43,6 +43,16 @@ export const Header: React.FC<HeaderProps> = ({
             >
               Ways to Wrap
             </a>
+
+            {/* Integrated Bridal Suite Nav Trigger */}
+            <button
+              type="button"
+              onClick={onOpenBridalSuite}
+              className="inline-flex items-center gap-1 text-rose-700 hover:text-rose-600 font-bold transition-colors whitespace-nowrap cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+              <span>Bridal Suite</span>
+            </button>
 
             <a
               href="#trademark"
@@ -62,25 +72,15 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenSizeGuide}
-              className="inline-flex items-center gap-1.5 text-stone-600 hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer"
+              className="inline-flex items-center gap-1 text-stone-600 hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer"
             >
               <Ruler className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               <span>Size Guide</span>
             </button>
           </nav>
 
-          {/* Right Action Icons & Direct Order */}
-          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
-            {/* Bridal Party Suite Button (Desktop xl+) */}
-            <button
-              type="button"
-              onClick={onOpenBridalSuite}
-              className="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-              <span>Bridal Party Suite</span>
-            </button>
-
+          {/* Right Action Icons & Direct Order - Guaranteed Safe Margin & Perfect Fit */}
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 pr-1 sm:pr-2">
             {/* Direct Factory WhatsApp Quick Link */}
             <a
               href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering Infinity Dresses.')}`}
@@ -93,11 +93,11 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="whitespace-nowrap font-semibold">061 510 7109</span>
             </a>
 
-            {/* Shopping Cart Button */}
+            {/* Shopping Cart Button - Always Fully Visible with Ample Breathing Space */}
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-stone-800 transition-all border border-rose-200 shrink-0 cursor-pointer"
+              className="relative p-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-stone-800 transition-all border border-rose-200 shrink-0 cursor-pointer shadow-2xs"
               aria-label="View Cart"
             >
               <ShoppingBag className="w-5 h-5 text-stone-700" />
@@ -139,6 +139,17 @@ export const Header: React.FC<HeaderProps> = ({
             >
               Ways to Wrap
             </a>
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenBridalSuite();
+              }}
+              className="flex items-center gap-2 text-left py-1 text-rose-700 hover:text-rose-600 font-bold uppercase"
+            >
+              <Sparkles className="w-4 h-4 text-rose-500" />
+              <span>Bridal Party Suite</span>
+            </button>
             <a
               href="#trademark"
               onClick={() => setIsMobileMenuOpen(false)}
@@ -171,12 +182,12 @@ export const Header: React.FC<HeaderProps> = ({
               type="button"
               onClick={() => {
                 setIsMobileMenuOpen(false);
-                onOpenBridalSuite();
+                onOpenCart();
               }}
               className="w-full py-2.5 px-4 rounded-full bg-rose-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Bridal Party Group Order Suite</span>
+              <ShoppingBag className="w-4 h-4" />
+              <span>View Shopping Cart ({cartCount})</span>
             </button>
 
             <a
