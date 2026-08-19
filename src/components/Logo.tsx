@@ -9,9 +9,9 @@ export const Logo: React.FC<LogoProps> = ({ variant = 'dark', className = '' }) 
   const isLight = variant === 'light';
 
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-3 select-none min-w-0 ${className}`}>
       {/* Trademark Infinity Icon with Soft Rose-Gold Styling */}
-      <div className="relative flex items-center justify-center w-11 h-11 shrink-0">
+      <div className="relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 shrink-0">
         <svg
           viewBox="0 0 100 60"
           className={`w-full h-full ${isLight ? 'text-pink-200' : 'text-rose-600'}`}
@@ -42,28 +42,22 @@ export const Logo: React.FC<LogoProps> = ({ variant = 'dark', className = '' }) 
         </svg>
       </div>
 
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1">
+      <div className="flex flex-col min-w-0">
+        <div className="flex items-center">
           <span
-            className={`font-serif tracking-[0.16em] text-lg sm:text-xl font-bold uppercase leading-none ${
-              isLight ? 'text-stone-900' : 'text-stone-900'
-            }`}
+            className="font-serif tracking-[0.12em] sm:tracking-[0.16em] text-sm sm:text-lg md:text-xl font-bold uppercase leading-none text-stone-900 truncate"
             style={{ fontFamily: 'Cinzel, Georgia, serif' }}
           >
-            THE INFINITY DRESS<span className="text-xs align-super ml-0.5 text-rose-500 font-sans font-semibold">™</span>
+            THE INFINITY DRESS<span className="text-[10px] sm:text-xs align-super ml-0.5 text-rose-500 font-sans font-semibold">™</span>
           </span>
         </div>
-        <div className="flex items-center gap-1.5 mt-1">
-          <span
-            className="tracking-[0.24em] text-[9px] sm:text-[10px] font-bold uppercase text-rose-600"
-          >
+        <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5">
+          <span className="tracking-[0.2em] sm:tracking-[0.24em] text-[8px] sm:text-[9.5px] font-bold uppercase text-rose-600 shrink-0">
             GROUP
           </span>
-          <span className="text-[9px] text-pink-300">•</span>
-          <span
-            className="tracking-[0.15em] text-[8.5px] sm:text-[9.5px] uppercase font-medium text-stone-500"
-          >
-            South Africa & Worldwide
+          <span className="text-[8px] text-pink-300">•</span>
+          <span className="tracking-[0.1em] sm:tracking-[0.14em] text-[7.5px] sm:text-[9px] uppercase font-medium text-stone-500 truncate">
+            South Africa
           </span>
         </div>
       </div>
