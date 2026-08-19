@@ -1,0 +1,6 @@
+{
+  "name": "THE INFINITY DRESS™ GROUP",
+  "description": "Official online portal for THE INFINITY DRESS™ GROUP, proud trademark holder and manufacturer of Infinity Dresses in South Africa and worldwide with custom ordering and WhatsApp checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
