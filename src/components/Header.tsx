@@ -20,16 +20,16 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-2xs w-full">
-      {/* Main Navigation Bar - Strictly Contained with Generous Inset Padding */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex items-center justify-between h-20 gap-2 sm:gap-4 w-full">
+      {/* Main Navigation Bar */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
+        <div className="flex items-center justify-between h-20 gap-3 w-full">
           {/* Brand Logo */}
           <a href="#" className="flex items-center shrink-0">
             <Logo variant="dark" />
           </a>
 
-          {/* Desktop Navigation Links - Compact, Sleek, Never Overflows */}
-          <nav className="hidden 2xl:flex items-center space-x-7 text-xs font-semibold uppercase tracking-wider text-stone-600">
+          {/* Desktop Navigation Links - Visible on all Desktop & Laptop Screens (lg+) */}
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-7 text-[11px] xl:text-xs font-semibold uppercase tracking-wider text-stone-600">
             <a
               href="#collection"
               className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
@@ -69,31 +69,31 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </nav>
 
-          {/* Right Action Icons & Direct Order - Spaced & Fitted */}
+          {/* Right Action Icons & Direct Order */}
           <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
-            {/* Bridal Party Suite Button (Only on wide screens 2xl to preserve space) */}
+            {/* Bridal Party Suite Button (Desktop xl+) */}
             <button
               type="button"
               onClick={onOpenBridalSuite}
-              className="hidden 2xl:inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0 cursor-pointer"
+              className="hidden xl:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               <span>Bridal Party Suite</span>
             </button>
 
-            {/* Direct Factory WhatsApp Quick Link (Desktop & Tablet) */}
+            {/* Direct Factory WhatsApp Quick Link */}
             <a
               href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering Infinity Dresses.')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300 transition-colors whitespace-nowrap shrink-0 shadow-2xs"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300 transition-colors whitespace-nowrap shrink-0 shadow-2xs"
               title="Factory WhatsApp Direct"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span className="whitespace-nowrap">061 510 7109</span>
+              <span className="whitespace-nowrap font-semibold">061 510 7109</span>
             </a>
 
-            {/* Shopping Cart Button - Always 100% visible and accessible */}
+            {/* Shopping Cart Button */}
             <button
               type="button"
               onClick={onOpenCart}
@@ -108,11 +108,11 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Navigation Toggle for Screens < 1536px */}
+            {/* Mobile / Tablet Menu Button (< 1024px) */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-md 2xl:hidden text-stone-700 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
+              className="p-2 rounded-md lg:hidden text-stone-700 hover:text-rose-600 hover:bg-rose-50 transition-colors shrink-0"
               aria-label="Open menu"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -121,9 +121,9 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Drawer Menu (< 1536px) */}
+      {/* Mobile / Tablet Drawer Menu (< 1024px) */}
       {isMobileMenuOpen && (
-        <div className="2xl:hidden bg-white border-b border-rose-100 px-4 pt-3 pb-6 space-y-4 shadow-lg animate-in slide-in-from-top-2">
+        <div className="lg:hidden bg-white border-b border-rose-100 px-4 pt-3 pb-6 space-y-4 shadow-lg animate-in slide-in-from-top-2">
           <nav className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-stone-700">
             <a
               href="#collection"
