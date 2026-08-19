@@ -212,27 +212,27 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-rose-600 uppercase tracking-widest mb-1">
-              <ShieldCheck className="w-4 h-4 text-rose-500" />
+        <div className="p-4 sm:p-6 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between gap-3 shrink-0">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-semibold text-rose-600 uppercase tracking-widest mb-1">
+              <ShieldCheck className="w-4 h-4 text-rose-500 shrink-0" />
               <span>Direct Factory Checkout</span>
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
+            <h2 className="font-serif text-lg sm:text-2xl font-bold text-stone-900 truncate">
               Complete Your Order
             </h2>
-            <p className="text-xs text-stone-600 mt-1">
-              Select your delivery destination and submit your order directly to our South African manufacturing team via WhatsApp or Email.
+            <p className="text-[11px] sm:text-xs text-stone-600 truncate sm:whitespace-normal">
+              Select delivery method and dispatch details for direct South African manufacturing.
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-rose-100 text-stone-700 hover:text-stone-900 border border-rose-200 flex items-center justify-center transition-colors shrink-0 shadow-2xs cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-stone-700" />
           </button>
         </div>
 

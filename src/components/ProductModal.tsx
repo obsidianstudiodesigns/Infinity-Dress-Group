@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart } from 'lucide-react';
 import { ColorSwatch, DressSize, Product } from '../types';
 import { COLOR_SWATCHES, LENGTH_OPTIONS, COMPANY_DETAILS } from '../data/products';
@@ -36,6 +36,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedSize, setSelectedSize] = useState<DressSize>('M (36-38)');
   const [quantity, setQuantity] = useState<number>(1);
   const [customBustWaist, setCustomBustWaist] = useState<string>('');
+
+  // Lock background scrolling when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   const currencyFormatter = CURRENCIES['ZAR'].format;
   const standardLength = LENGTH_OPTIONS['maxi'];
@@ -80,38 +88,38 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <div
       id="product-modal-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto w-full max-w-[100vw]"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-stone-900/65 backdrop-blur-md"
       onClick={onClose}
     >
       <div
-        className="relative bg-white text-stone-800 rounded-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
+        className="relative bg-white text-stone-800 rounded-3xl max-w-3xl w-full max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Modal Header */}
-        <div className="p-4 sm:p-5 bg-rose-50/60 border-b border-rose-100 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
+        {/* Modal Header - Guaranteed full visibility and clean responsive title */}
+        <div className="p-3.5 sm:p-5 bg-rose-50/80 border-b border-rose-100 flex items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <Sparkles className="w-4 h-4 text-rose-500 shrink-0" />
-            <h2 className="font-serif text-base sm:text-xl font-bold text-stone-900 truncate">
+            <h2 className="font-serif text-sm sm:text-lg md:text-xl font-bold text-stone-900 truncate" title={`Customize Your ${product.name}`}>
               Customize Your {product.name}
             </h2>
           </div>
 
+          {/* Prominent High-Contrast Close Button */}
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors shrink-0"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white hover:bg-rose-100 text-stone-700 hover:text-stone-900 border border-rose-200 flex items-center justify-center transition-colors shrink-0 shadow-2xs cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-stone-700" />
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh] grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Left Column: Crisp, Authentic High-Resolution Photography (No artificial overlay) */}
+        {/* Modal Body - Scrollable content */}
+        <div className="flex-1 overflow-y-auto min-h-0 p-4 sm:p-6 grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Left Column: Crisp, Authentic High-Resolution Photography */}
           <div className="md:col-span-6 space-y-3">
             <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100 shadow-inner group">
-              {/* Pure High-Resolution Studio Photography */}
               <img
                 src={activeImage}
                 alt={product.name}
@@ -260,7 +268,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* Modal Footer */}
         <div className="p-4 sm:p-5 bg-rose-50/80 border-t border-rose-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between sm:justify-start gap-4 w-full sm:w-auto">
             <div>
               <span className="text-[10px] text-stone-500 uppercase tracking-wider block">
                 Total Price (ZAR)
@@ -271,11 +279,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             </div>
 
             {/* Quantity Selector */}
-            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-lg border border-rose-200">
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-xl border border-rose-200 shadow-2xs">
               <button
                 type="button"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="text-stone-500 hover:text-stone-900 font-bold px-1 cursor-pointer"
+                className="text-stone-500 hover:text-stone-900 font-bold px-1.5 cursor-pointer text-sm"
               >
                 -
               </button>
@@ -283,7 +291,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="text-stone-500 hover:text-stone-900 font-bold px-1 cursor-pointer"
+                className="text-stone-500 hover:text-stone-900 font-bold px-1.5 cursor-pointer text-sm"
               >
                 +
               </button>
