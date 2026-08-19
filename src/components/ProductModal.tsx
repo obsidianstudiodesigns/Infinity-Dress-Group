@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart, Palette } from 'lucide-react';
+import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart, Palette, ShieldCheck } from 'lucide-react';
 import { ColorSwatch, DressSize, Product } from '../types';
 import { COLOR_SWATCHES, LENGTH_OPTIONS, COMPANY_DETAILS } from '../data/products';
 import { CURRENCIES } from '../utils/order';
@@ -61,7 +61,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   const handleDirectWhatsApp = () => {
-    const text = `Hello! I would like to order the *${product.name}*:\n\n• Color: ${selectedColor.name}\n• Size: ${selectedSize === 'Custom Measurements' && customBustWaist ? `Custom (${customBustWaist})` : selectedSize}\n• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
+    const text = `Hello! I would like to order the *${product.name}*:\n\n• Selected Fabric Color: ${selectedColor.name}\n• Size: ${selectedSize === 'Custom Measurements' && customBustWaist ? `Custom (${customBustWaist})` : selectedSize}\n• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
     const url = `https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -108,10 +108,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh] grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Left Column: Interactive Image Preview with Dynamic Color Tint */}
+          {/* Left Column: Natural High-Resolution Product Image with Live Fabric Color Card */}
           <div className="md:col-span-6 space-y-3">
             <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-rose-50/40 border border-rose-100 shadow-inner group">
-              {/* Base Dress Photograph */}
+              {/* Natural Photograph (crisp, true-to-life colors for model, hair, and scene) */}
               <img
                 src={activeImage}
                 alt={product.name}
@@ -119,30 +119,29 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 referrerPolicy="no-referrer"
               />
 
-              {/* Dynamic Live Color Overlay Layers */}
-              <div
-                className="absolute inset-0 pointer-events-none transition-all duration-500 mix-blend-color opacity-75"
-                style={{ backgroundColor: selectedColor.hex }}
-              />
-              <div
-                className="absolute inset-0 pointer-events-none transition-all duration-500 mix-blend-multiply opacity-20"
-                style={{ backgroundColor: selectedColor.hex }}
-              />
-
-              {/* Live Color Swatch Floating Pill */}
-              <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                <div
-                  className="px-3 py-1 rounded-full text-[11px] font-bold text-white shadow-md flex items-center gap-1.5 backdrop-blur-xs border border-white/40"
-                  style={{ backgroundColor: selectedColor.hex }}
-                >
-                  <Palette className="w-3 h-3 text-white" />
-                  <span>{selectedColor.name}</span>
+              {/* Floating Dedicated Selected Fabric Swatch Card */}
+              <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md rounded-xl p-3 border border-rose-200/80 shadow-md flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div
+                    className="w-8 h-8 rounded-full border-2 border-white shadow-sm shrink-0 flex items-center justify-center ring-1 ring-stone-300"
+                    style={{ backgroundColor: selectedColor.hex }}
+                  >
+                    <Check className="w-3.5 h-3.5 text-white drop-shadow-md" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider block truncate">
+                      Selected Fabric Color
+                    </span>
+                    <span className="text-xs font-bold text-stone-900 block truncate">
+                      {selectedColor.name}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Live Tint Indicator Pill */}
-              <div className="absolute bottom-3 left-3 right-3 bg-white/90 backdrop-blur-md rounded-xl p-2 text-center text-[11px] text-stone-700 font-medium border border-rose-100 shadow-xs pointer-events-none">
-                Live Fabric Color Preview: <strong className="text-rose-600 font-bold">{selectedColor.name}</strong>
+                <div className="text-[10px] text-stone-500 font-medium shrink-0 flex items-center gap-1 bg-rose-50/80 px-2 py-1 rounded-md border border-rose-100">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  <span>Dye-Lot Match</span>
+                </div>
               </div>
             </div>
 
@@ -152,7 +151,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveImage(product.images.front)}
-                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeImage === product.images.front
                       ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold shadow-2xs'
                       : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
@@ -164,7 +163,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setActiveImage(product.images.back!)}
-                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`p-2 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                     activeImage === product.images.back
                       ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold shadow-2xs'
                       : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
@@ -181,7 +180,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <span>280gsm Anti-Crease Heavy Knit</span>
               </div>
               <p className="text-[11px] text-stone-500 leading-tight">
-                Flattering opacity and drape guaranteed with matching dye-lot.
+                Authentic South African manufacturing with certified uniform dye-lots.
               </p>
             </div>
           </div>
@@ -196,7 +195,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </label>
               </div>
 
-              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-48 overflow-y-auto p-1.5 bg-rose-50/30 rounded-xl border border-rose-100">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-52 overflow-y-auto p-1.5 bg-rose-50/30 rounded-xl border border-rose-100">
                 {COLOR_SWATCHES.map((swatch) => {
                   const isSelected = selectedColor.id === swatch.id;
                   return (

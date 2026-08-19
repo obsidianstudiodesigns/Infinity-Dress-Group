@@ -9,18 +9,17 @@ interface HeroProps {
 
 export const Hero: React.FC<HeroProps> = ({ onExploreClick, onOpenBridalSuite }) => {
   return (
-    <section className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden border-b border-rose-100">
+    <section className="relative min-h-[85vh] lg:min-h-[90vh] flex items-center overflow-hidden border-b border-rose-100/60">
       {/* Full Background Wallpaper Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <img
           src={HERO_IMAGE}
           alt="THE INFINITY DRESS™ GROUP - South African Manufacturer Wallpaper"
           className="w-full h-full object-cover object-center sm:object-right-top"
           referrerPolicy="no-referrer"
         />
-        {/* Soft Dreamy Light Pink / Blush Gradient Overlay for Crystal-Clear Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#fffafb]/95 via-[#fff5f7]/90 to-[#fff8f9]/70 sm:via-[#fff5f7]/85 sm:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fffafb] via-transparent to-transparent h-32 bottom-0" />
+        {/* Completely smooth, seamless dreamy blush gradient overlay without any harsh lines */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#fffafb]/95 via-[#fffafb]/85 to-transparent sm:via-[#fffafb]/80" />
       </div>
 
       {/* Hero Content Container */}

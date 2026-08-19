@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Sparkles, Menu, X, Phone, MessageCircle, Ruler } from 'lucide-react';
+import { ShoppingBag, Sparkles, Menu, X, MessageCircle, Ruler } from 'lucide-react';
 import { Logo } from './Logo';
 import { COMPANY_DETAILS } from '../data/products';
 
@@ -19,41 +19,41 @@ export const Header: React.FC<HeaderProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-rose-100/80 shadow-xs">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-rose-100 shadow-2xs">
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-20 gap-4">
           {/* Brand Logo */}
-          <a href="#" className="flex items-center group">
+          <a href="#" className="flex items-center shrink-0">
             <Logo variant="dark" />
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-8 text-xs font-semibold uppercase tracking-wider text-stone-600">
+          <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7 text-[11px] xl:text-xs font-semibold uppercase tracking-wider text-stone-600 shrink-0">
             <a
               href="#collection"
-              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
             >
               Collection
             </a>
 
             <a
               href="#styles"
-              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
             >
               Ways to Wrap
             </a>
 
             <a
               href="#trademark"
-              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
             >
               Why Choose Us
             </a>
 
             <a
               href="#reviews"
-              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all whitespace-nowrap"
             >
               Real Weddings
             </a>
@@ -62,42 +62,42 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onOpenSizeGuide}
-              className="inline-flex items-center gap-1.5 text-stone-600 hover:text-rose-600 transition-colors"
+              className="inline-flex items-center gap-1.5 text-stone-600 hover:text-rose-600 transition-colors whitespace-nowrap cursor-pointer"
             >
-              <Ruler className="w-3.5 h-3.5 text-rose-500" />
+              <Ruler className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               <span>Size Guide</span>
             </button>
           </nav>
 
-          {/* Right Action Icons & Direct Order */}
-          <div className="flex items-center space-x-3 sm:space-x-4">
+          {/* Right Action Icons & Direct Order - Spaced & Never Cramped */}
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
             {/* Bridal Party Suite Button */}
             <button
               type="button"
               onClick={onOpenBridalSuite}
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs whitespace-nowrap shrink-0 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+              <Sparkles className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               <span>Bridal Party Suite</span>
             </button>
 
-            {/* Direct Factory WhatsApp Quick Link */}
+            {/* Direct Factory WhatsApp Quick Link - Guaranteed 1-line whitespace-nowrap */}
             <a
               href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering Infinity Dresses.')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold border border-emerald-200 transition-colors"
+              className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300 transition-colors whitespace-nowrap shrink-0 shadow-2xs"
               title="Factory WhatsApp Direct"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>061 510 7109</span>
+              <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="whitespace-nowrap tracking-wide">061 510 7109</span>
             </a>
 
             {/* Shopping Cart Button */}
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-stone-800 transition-all border border-rose-200"
+              className="relative p-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-stone-800 transition-all border border-rose-200 shrink-0 cursor-pointer"
               aria-label="View Cart"
             >
               <ShoppingBag className="w-5 h-5 text-stone-700" />
