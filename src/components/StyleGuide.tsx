@@ -1,85 +1,16 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Sparkles, ChevronRight, Video, ZoomIn, Eye, MoveHorizontal, RotateCcw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sparkles, ChevronRight, Video, ZoomIn, Eye } from 'lucide-react';
 import { WRAPPING_STYLES, COMPANY_DETAILS } from '../data/products';
 import { StyleTutorial } from '../types';
 
 export const StyleGuide: React.FC = () => {
   const [activeStyle, setActiveStyle] = useState<StyleTutorial>(WRAPPING_STYLES[0]);
   const [isZoomed, setIsZoomed] = useState<boolean>(false);
-  const [activeView, setActiveView] = useState<'front' | 'back'>('front');
-  
-  // Slider / Drag comparison position (0 to 100)
-  const [sliderPos, setSliderPos] = useState<number>(50);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const zoomContainerRef = useRef<HTMLDivElement>(null);
 
-  // Handle horizontal drag
-  const handleDrag = useCallback((clientX: number, targetContainer: HTMLDivElement | null) => {
-    if (!targetContainer) return;
-    const rect = targetContainer.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPos(percentage);
-    if (percentage > 50) {
-      setActiveView('back');
-    } else {
-      setActiveView('front');
-    }
-  }, []);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    handleDrag(e.clientX, isZoomed ? zoomContainerRef.current : containerRef.current);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    if (e.touches[0]) {
-      handleDrag(e.touches[0].clientX, isZoomed ? zoomContainerRef.current : containerRef.current);
-    }
-  };
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      handleDrag(e.clientX, isZoomed ? zoomContainerRef.current : containerRef.current);
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!isDragging) return;
-      if (e.touches[0]) {
-        handleDrag(e.touches[0].clientX, isZoomed ? zoomContainerRef.current : containerRef.current);
-      }
-    };
-
-    const handleMouseUp = () => {
-      if (isDragging) {
-        setIsDragging(false);
-      }
-    };
-
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      window.addEventListener('touchmove', handleTouchMove);
-      window.addEventListener('touchend', handleMouseUp);
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleMouseUp);
-    };
-  }, [isDragging, isZoomed, handleDrag]);
-
-  // Current images for active style
-  const frontImg = activeStyle.images?.front || activeStyle.image || '';
-  const backImg = activeStyle.images?.back || activeStyle.image || '';
+  const currentImage = activeStyle.image || activeStyle.images?.front || '';
 
   return (
-    <section id="styles" className="py-16 sm:py-24 bg-[#fff8f9] border-b border-rose-100 select-none">
+    <section id="styles" className="py-16 sm:py-24 bg-[#fff8f9] border-b border-rose-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
@@ -93,7 +24,7 @@ export const StyleGuide: React.FC = () => {
           </h2>
 
           <p className="mt-4 text-sm sm:text-base text-stone-600 leading-relaxed font-light">
-            Every bridesmaid has a unique shape and comfort level. Explore popular wrapping styles with interactive front and back views to see every strap crossover and draping detail.
+            Every bridesmaid has a unique shape and comfort level. Explore popular wrapping styles with clear step-by-step visual guides to achieve each look effortlessly.
           </p>
         </div>
 
@@ -110,15 +41,12 @@ export const StyleGuide: React.FC = () => {
 
             {WRAPPING_STYLES.map((style) => {
               const isSelected = activeStyle.id === style.id;
-              const thumbImg = style.images?.front || style.image;
+              const thumbImg = style.image || style.images?.front;
               return (
                 <button
                   key={style.id}
                   type="button"
-                  onClick={() => {
-                    setActiveStyle(style);
-                    setSliderPos(50);
-                  }}
+                  onClick={() => setActiveStyle(style)}
                   className={`w-full p-3.5 rounded-2xl text-left transition-all flex items-center gap-3.5 border cursor-pointer ${
                     isSelected
                       ? 'bg-white border-rose-400 shadow-md ring-2 ring-rose-200/70 scale-[1.01]'
@@ -163,7 +91,7 @@ export const StyleGuide: React.FC = () => {
             })}
           </div>
 
-          {/* Right Spotlight: Active Style Interactive Visuals & Step-by-Step Breakdown */}
+          {/* Right Spotlight: Active Style Visual Guide & Step-by-Step Breakdown */}
           <div className="lg:col-span-8 bg-white rounded-3xl border border-rose-100 p-6 sm:p-8 shadow-md">
             {/* Header of Active Style */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-rose-100">
@@ -199,121 +127,39 @@ export const StyleGuide: React.FC = () => {
               </a>
             </div>
 
-            {/* Split Content: Interactive Front/Back Slider + Steps */}
+            {/* Split Content: Single High-Definition Visual Guide + Steps */}
             <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-              {/* Interactive Visual Canvas Container */}
-              <div className="md:col-span-5 space-y-3">
-                {/* View Toggle Buttons */}
-                <div className="flex items-center justify-between bg-rose-50/70 p-1 rounded-xl border border-rose-100">
-                  <button
-                    type="button"
-                    onClick={() => setSliderPos(0)}
-                    className={`flex-1 py-1 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sliderPos <= 20
-                        ? 'bg-white text-rose-800 shadow-xs ring-1 ring-rose-200'
-                        : 'text-stone-600 hover:text-stone-900'
-                    }`}
-                  >
-                    Front View
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSliderPos(50)}
-                    className={`py-1 px-2 rounded-lg text-[10px] font-semibold transition-all text-stone-500 hover:text-rose-600 cursor-pointer flex items-center gap-1`}
-                    title="Reset split compare view"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>Split</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSliderPos(100)}
-                    className={`flex-1 py-1 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      sliderPos >= 80
-                        ? 'bg-white text-rose-800 shadow-xs ring-1 ring-rose-200'
-                        : 'text-stone-600 hover:text-stone-900'
-                    }`}
-                  >
-                    Back View
-                  </button>
-                </div>
-
-                {/* Interactive Drag Viewer Canvas */}
-                <div
-                  ref={containerRef}
-                  onMouseDown={handleMouseDown}
-                  onTouchStart={handleTouchStart}
-                  className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100 shadow-sm cursor-ew-resize touch-none select-none group"
-                >
-                  {/* Back View Image (Base layer) */}
-                  <img
-                    src={backImg}
-                    alt={`${activeStyle.name} Back View`}
-                    className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-                    referrerPolicy="no-referrer"
-                  />
-
-                  {/* Front View Image (Clipped layer on top) */}
+              {/* Visual Presentation */}
+              {currentImage && (
+                <div className="md:col-span-5 space-y-3">
                   <div
-                    className="absolute inset-0 overflow-hidden pointer-events-none transition-none"
-                    style={{ width: `${100 - sliderPos}%` }}
+                    className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100 shadow-sm group cursor-pointer"
+                    onClick={() => setIsZoomed(true)}
                   >
                     <img
-                      src={frontImg}
-                      alt={`${activeStyle.name} Front View`}
-                      className="absolute inset-0 w-full h-full object-cover object-center max-w-none"
-                      style={{
-                        width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%',
-                        height: containerRef.current ? `${containerRef.current.clientHeight}px` : '100%',
-                      }}
+                      src={currentImage}
+                      alt={`${activeStyle.name} Visual Wrap Guide`}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                       referrerPolicy="no-referrer"
                     />
-                  </div>
 
-                  {/* Vertical Divider Slider Bar */}
-                  <div
-                    className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg pointer-events-none z-10 transition-none"
-                    style={{ left: `${100 - sliderPos}%` }}
-                  >
-                    {/* Drag Handle Bubble */}
-                    <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white/95 text-rose-700 shadow-md border border-rose-200 flex items-center justify-center pointer-events-auto cursor-ew-resize">
-                      <MoveHorizontal className="w-4 h-4 text-rose-600 animate-pulse" />
+                    {/* Hover Zoom Hint */}
+                    <div className="absolute inset-0 bg-stone-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="px-3 py-1.5 rounded-full bg-white/90 text-stone-900 text-xs font-bold shadow-lg flex items-center gap-1.5">
+                        <ZoomIn className="w-3.5 h-3.5 text-rose-600" />
+                        Click to Enlarge
+                      </span>
                     </div>
                   </div>
 
-                  {/* Tags */}
-                  <div className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-stone-900/70 backdrop-blur-xs text-white text-[10px] font-bold tracking-wider uppercase pointer-events-none">
-                    Front
+                  <div className="p-3 rounded-xl bg-rose-50/60 border border-rose-100 text-[11px] text-stone-600 text-center">
+                    <span className="font-semibold text-stone-800">Visual Wrap Guide:</span> Shows precise neckline drape, strap placement, and waistband cinch.
                   </div>
-                  <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-stone-900/70 backdrop-blur-xs text-white text-[10px] font-bold tracking-wider uppercase pointer-events-none">
-                    Back
-                  </div>
-
-                  {/* Click to Zoom Overlay Trigger */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsZoomed(true);
-                    }}
-                    className="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-white text-stone-900 text-[11px] font-semibold shadow-md flex items-center gap-1 cursor-pointer transition-all hover:scale-105 z-20"
-                  >
-                    <ZoomIn className="w-3.5 h-3.5 text-rose-600" />
-                    <span>Zoom</span>
-                  </button>
                 </div>
-
-                {/* Instruction prompt below viewer */}
-                <div className="p-2.5 rounded-xl bg-rose-50/60 border border-rose-100 text-[11px] text-stone-600 text-center flex items-center justify-center gap-1.5">
-                  <MoveHorizontal className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                  <span><strong>Drag horizontally</strong> side-to-side to view front & back drape</span>
-                </div>
-              </div>
+              )}
 
               {/* Steps Container */}
-              <div className="md:col-span-7 space-y-4">
+              <div className={`${currentImage ? 'md:col-span-7' : 'md:col-span-12'} space-y-4`}>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-stone-500">
                   Step-by-Step Wrapping Instructions:
                 </h4>
@@ -348,113 +194,41 @@ export const StyleGuide: React.FC = () => {
         </div>
       </div>
 
-      {/* Fullscreen Interactive Zoom Lightbox */}
-      {isZoomed && (
+      {/* Simple Fullscreen Zoom Lightbox */}
+      {isZoomed && currentImage && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/85 backdrop-blur-md animate-in fade-in cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/80 backdrop-blur-md animate-in fade-in cursor-pointer"
           onClick={() => setIsZoomed(false)}
         >
           <div
-            className="relative max-w-2xl w-full bg-white rounded-3xl p-5 shadow-2xl border border-rose-100 cursor-default"
+            className="relative max-w-2xl w-full bg-white rounded-3xl p-4 shadow-2xl border border-rose-100 cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-3 border-b border-rose-100 mb-3">
               <div>
                 <h4 className="font-serif font-bold text-lg text-stone-900">
-                  {activeStyle.name} — Interactive Front & Back Detail
+                  {activeStyle.name} — Style Preview
                 </h4>
                 <p className="text-xs text-stone-500">
-                  Drag side-to-side to compare front neckline and back strap detailing
+                  Detailed fabric drape and strap placement
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsZoomed(false)}
-                className="p-2 rounded-full hover:bg-rose-50 text-stone-400 hover:text-stone-900 transition-colors cursor-pointer"
+                className="p-1.5 rounded-full hover:bg-rose-50 text-stone-400 hover:text-stone-900 transition-colors cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            {/* Quick View Switches */}
-            <div className="flex gap-2 mb-3">
-              <button
-                type="button"
-                onClick={() => setSliderPos(0)}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
-                  sliderPos <= 20
-                    ? 'bg-rose-500 text-white border-rose-500 shadow-xs'
-                    : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                }`}
-              >
-                Show Front Only
-              </button>
-              <button
-                type="button"
-                onClick={() => setSliderPos(50)}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-stone-100 text-stone-700 hover:bg-stone-200 border border-stone-200 cursor-pointer"
-              >
-                50/50 Split
-              </button>
-              <button
-                type="button"
-                onClick={() => setSliderPos(100)}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
-                  sliderPos >= 80
-                    ? 'bg-rose-500 text-white border-rose-500 shadow-xs'
-                    : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
-                }`}
-              >
-                Show Back Only
-              </button>
-            </div>
-
-            {/* Interactive Canvas */}
-            <div
-              ref={zoomContainerRef}
-              onMouseDown={handleMouseDown}
-              onTouchStart={handleTouchStart}
-              className="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100 cursor-ew-resize select-none touch-none"
-            >
+            <div className="aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100">
               <img
-                src={backImg}
-                alt={`${activeStyle.name} Back View High-Res`}
-                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+                src={currentImage}
+                alt={activeStyle.name}
+                className="w-full h-full object-cover object-center"
                 referrerPolicy="no-referrer"
               />
-
-              <div
-                className="absolute inset-0 overflow-hidden pointer-events-none"
-                style={{ width: `${100 - sliderPos}%` }}
-              >
-                <img
-                  src={frontImg}
-                  alt={`${activeStyle.name} Front View High-Res`}
-                  className="absolute inset-0 w-full h-full object-cover object-center max-w-none"
-                  style={{
-                    width: zoomContainerRef.current ? `${zoomContainerRef.current.clientWidth}px` : '100%',
-                    height: zoomContainerRef.current ? `${zoomContainerRef.current.clientHeight}px` : '100%',
-                  }}
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              {/* Slider line */}
-              <div
-                className="absolute top-0 bottom-0 w-0.5 bg-white shadow-xl pointer-events-none z-10"
-                style={{ left: `${100 - sliderPos}%` }}
-              >
-                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-rose-700 shadow-xl border border-rose-200 flex items-center justify-center">
-                  <MoveHorizontal className="w-5 h-5 text-rose-600" />
-                </div>
-              </div>
-
-              <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-stone-900/75 backdrop-blur-xs text-white text-xs font-bold uppercase pointer-events-none">
-                Front View
-              </div>
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-stone-900/75 backdrop-blur-xs text-white text-xs font-bold uppercase pointer-events-none">
-                Back View
-              </div>
             </div>
           </div>
         </div>
