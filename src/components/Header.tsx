@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { Phone, MessageCircle, ShoppingBag, Menu, X, Globe, Sparkles, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Sparkles, Menu, X, Phone, MessageCircle, Ruler } from 'lucide-react';
 import { Logo } from './Logo';
-import { Currency } from '../types';
-import { CURRENCIES } from '../utils/order';
 import { COMPANY_DETAILS } from '../data/products';
 
 interface HeaderProps {
-  currentCurrency: Currency;
-  onCurrencyChange: (currency: Currency) => void;
   cartCount: number;
   onOpenCart: () => void;
   onOpenBridalSuite: () => void;
@@ -15,223 +11,183 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  currentCurrency,
-  onCurrencyChange,
   cartCount,
   onOpenCart,
   onOpenBridalSuite,
   onOpenSizeGuide,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const currencies: Currency[] = ['ZAR', 'USD', 'GBP', 'EUR', 'AUD'];
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-stone-900 text-stone-100 shadow-md">
-      {/* Top Luxury Announcement Ticker */}
-      <div className="bg-emerald-950 border-b border-emerald-900/60 text-xs py-1.5 px-4 text-emerald-100">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-          <div className="flex items-center justify-center gap-2 tracking-wider">
-            <span className="inline-flex items-center gap-1 font-semibold text-amber-300">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              OFFICIAL TRADEMARK HOLDER
-            </span>
-            <span className="hidden md:inline text-emerald-400">•</span>
-            <span className="hidden md:inline text-stone-200">
-              Handcrafted in South Africa | Shipped Worldwide
-            </span>
-            <span className="hidden lg:inline text-emerald-400">•</span>
-            <span className="hidden lg:inline text-amber-200 font-medium">
-              Free SA Courier for orders over R2,500
-            </span>
-          </div>
-
-          <div className="flex items-center justify-center gap-4 text-[11px] font-medium">
-            <a
-              href={`tel:${COMPANY_DETAILS.phoneIntl}`}
-              className="flex items-center gap-1 hover:text-amber-300 transition-colors"
-            >
-              <Phone className="w-3 h-3 text-emerald-400" />
-              <span>{COMPANY_DETAILS.phoneDisplay}</span>
-            </a>
-            <a
-              href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like assistance with an Infinity Dress inquiry.')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-emerald-300 hover:text-white transition-colors bg-emerald-800/60 px-2 py-0.5 rounded border border-emerald-700/50"
-            >
-              <MessageCircle className="w-3 h-3 text-emerald-300" />
-              <span className="font-semibold">WhatsApp Factory</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-rose-100/80 shadow-xs">
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Logo */}
           <a href="#" className="flex items-center group">
-            <Logo variant="light" />
+            <Logo variant="dark" />
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-6 text-sm font-medium tracking-wide text-stone-200">
-            <a href="#collection" className="hover:text-amber-300 transition-colors">
-              The Collection
-            </a>
-            <a href="#styles" className="hover:text-amber-300 transition-colors">
-              27+ Style Guide
-            </a>
-            <button
-              type="button"
-              onClick={onOpenBridalSuite}
-              className="hover:text-amber-300 transition-colors flex items-center gap-1 text-amber-300"
+          <nav className="hidden lg:flex items-center space-x-8 text-xs font-semibold uppercase tracking-wider text-stone-600">
+            <a
+              href="#collection"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              Bridal Party Suite
-            </button>
-            <a href="#colors" className="hover:text-amber-300 transition-colors">
-              Fabric Swatches
+              Collection
             </a>
+
+            <a
+              href="#styles"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+            >
+              27+ Ways to Wrap
+            </a>
+
+            <a
+              href="#trademark"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+            >
+              Why Choose Us
+            </a>
+
+            <a
+              href="#reviews"
+              className="hover:text-rose-600 transition-colors py-1 relative hover:after:w-full after:w-0 after:h-0.5 after:bg-rose-400 after:absolute after:bottom-0 after:left-0 after:transition-all"
+            >
+              Real Weddings
+            </a>
+
+            {/* Sizing Tool Modal Trigger */}
             <button
               type="button"
               onClick={onOpenSizeGuide}
-              className="hover:text-amber-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-stone-600 hover:text-rose-600 transition-colors"
             >
-              Size Guide
+              <Ruler className="w-3.5 h-3.5 text-rose-500" />
+              <span>Size Guide</span>
             </button>
-            <a href="#trademark" className="hover:text-amber-300 transition-colors">
-              Our Trademark
-            </a>
-            <a href="#reviews" className="hover:text-amber-300 transition-colors">
-              Real Brides
-            </a>
           </nav>
 
-          {/* Right Action Icons: Currency & Cart */}
-          <div className="flex items-center space-x-3">
-            {/* Currency Selector */}
-            <div className="relative flex items-center bg-stone-800/80 rounded-md border border-stone-700/60 px-2 py-1 text-xs">
-              <Globe className="w-3.5 h-3.5 text-stone-400 mr-1.5" />
-              <select
-                value={currentCurrency}
-                onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                className="bg-transparent text-stone-200 font-semibold focus:outline-none cursor-pointer"
-                aria-label="Select Currency"
-              >
-                {currencies.map((cur) => (
-                  <option key={cur} value={cur} className="bg-stone-900 text-stone-100">
-                    {cur} ({CURRENCIES[cur].symbol})
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Right Action Icons & Direct Order */}
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            {/* Bridal Party Suite Button */}
+            <button
+              type="button"
+              onClick={onOpenBridalSuite}
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold tracking-wider uppercase transition-all shadow-2xs hover:shadow-xs"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+              <span>Bridal Party Suite</span>
+            </button>
+
+            {/* Direct Factory WhatsApp Quick Link */}
+            <a
+              href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering Infinity Dresses.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold border border-emerald-200 transition-colors"
+              title="Factory WhatsApp Direct"
+            >
+              <MessageCircle className="w-4 h-4 text-emerald-600" />
+              <span>061 510 7109</span>
+            </a>
 
             {/* Shopping Cart Button */}
             <button
               type="button"
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-md bg-emerald-800/80 hover:bg-emerald-700 text-white border border-emerald-600/40 transition-all flex items-center gap-2 group shadow-sm"
-              aria-label="View Shopping Cart"
+              className="relative p-2.5 rounded-full bg-rose-50 hover:bg-rose-100 text-stone-800 transition-all border border-rose-200"
+              aria-label="View Cart"
             >
-              <ShoppingBag className="w-5 h-5 text-amber-300 group-hover:scale-105 transition-transform" />
-              <span className="hidden sm:inline text-xs font-semibold tracking-wider">Cart</span>
+              <ShoppingBag className="w-5 h-5 text-stone-700" />
               {cartCount > 0 && (
-                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1 text-[11px] font-bold bg-amber-400 text-stone-900 rounded-full">
+                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white font-bold text-[10px] flex items-center justify-center shadow-sm animate-pulse">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Navigation Toggle */}
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-stone-300 hover:text-white focus:outline-none"
-              aria-label="Toggle Navigation Menu"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-md lg:hidden text-stone-700 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+              aria-label="Open menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </div>
 
       {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-stone-900 border-t border-stone-800 px-4 pt-3 pb-6 space-y-3">
-          <div className="grid grid-cols-1 gap-2 text-sm font-medium text-stone-200">
+      {isMobileMenuOpen && (
+        <div className="lg:hidden bg-white border-b border-rose-100 px-4 pt-3 pb-6 space-y-4 shadow-lg animate-in slide-in-from-top-2">
+          <nav className="flex flex-col space-y-3 text-sm font-semibold uppercase tracking-wider text-stone-700">
             <a
               href="#collection"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-stone-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-rose-600 py-1"
             >
               The Collection
             </a>
             <a
               href="#styles"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-stone-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-rose-600 py-1"
             >
-              27+ Style Guide
+              27+ Ways to Wrap
             </a>
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenBridalSuite();
-              }}
-              className="text-left px-3 py-2 rounded text-amber-300 bg-amber-950/40 border border-amber-800/30 flex items-center justify-between"
-            >
-              <span>Bridal Party Suite (Bulk Discounts)</span>
-              <Sparkles className="w-4 h-4 text-amber-300" />
-            </button>
-            <a
-              href="#colors"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-stone-800"
-            >
-              Fabric Swatches & Colors
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenSizeGuide();
-              }}
-              className="text-left px-3 py-2 rounded hover:bg-stone-800"
-            >
-              Size & Fit Guide
-            </button>
             <a
               href="#trademark"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-stone-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-rose-600 py-1"
             >
-              Our South African Trademark
+              Why Choose Us
             </a>
             <a
               href="#reviews"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded hover:bg-stone-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="hover:text-rose-600 py-1"
             >
-              Real Brides Reviews
+              Real Weddings
             </a>
-          </div>
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenSizeGuide();
+              }}
+              className="flex items-center gap-2 text-left py-1 text-stone-700 hover:text-rose-600 uppercase"
+            >
+              <Ruler className="w-4 h-4 text-rose-500" />
+              <span>Official Size Guide</span>
+            </button>
+          </nav>
 
-          <div className="pt-3 border-t border-stone-800 flex flex-col gap-2 text-xs text-stone-300">
-            <div className="flex items-center justify-between py-1">
-              <span>Customer Care:</span>
-              <a href={`tel:${COMPANY_DETAILS.phoneIntl}`} className="font-semibold text-amber-300">
-                {COMPANY_DETAILS.phoneDisplay}
-              </a>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <span>Email:</span>
-              <a href={`mailto:${COMPANY_DETAILS.email}`} className="font-medium text-stone-300">
-                {COMPANY_DETAILS.email}
-              </a>
-            </div>
+          <div className="pt-4 border-t border-rose-100 flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenBridalSuite();
+              }}
+              className="w-full py-2.5 px-4 rounded-full bg-rose-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Bridal Party Group Order Suite</span>
+            </button>
+
+            <a
+              href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering Infinity Dresses.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-4 rounded-full bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-xs"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>WhatsApp Direct: 061 510 7109</span>
+            </a>
           </div>
         </div>
       )}

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, ShoppingBag, Sparkles, CheckCircle2 } from 'lucide-react';
-import { CartItem, Currency, Product } from './types';
+import { MessageCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { CartItem, Product } from './types';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ProductGrid } from './components/ProductGrid';
 import { ProductModal } from './components/ProductModal';
 import { StyleGuide } from './components/StyleGuide';
-import { FabricAndColors } from './components/FabricAndColors';
 import { WhyChooseUs } from './components/WhyChooseUs';
 import { ReviewsSection } from './components/ReviewsSection';
 import { BridalPartyBuilder } from './components/BridalPartyBuilder';
@@ -17,7 +16,6 @@ import { Footer } from './components/Footer';
 import { COMPANY_DETAILS } from './data/products';
 
 export default function App() {
-  const [currency, setCurrency] = useState<Currency>('ZAR');
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('infinity_dress_cart');
@@ -106,19 +104,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 font-sans selection:bg-amber-400 selection:text-stone-950 flex flex-col">
+    <div className="min-h-screen bg-[#fffafb] text-stone-800 font-sans selection:bg-rose-200 selection:text-rose-950 flex flex-col">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-6 z-50 bg-stone-900 text-white px-4 py-3 rounded-lg border border-emerald-500/60 shadow-2xl flex items-center gap-3 animate-fade-in text-xs sm:text-sm">
+        <div className="fixed bottom-6 left-6 z-50 bg-stone-900 text-white px-4 py-3 rounded-xl border border-rose-300/40 shadow-2xl flex items-center gap-3 animate-fade-in text-xs sm:text-sm">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Main Site Header */}
+      {/* Main Site Header (No top ticker banner, clean light dreamy styling) */}
       <Header
-        currentCurrency={currency}
-        onCurrencyChange={setCurrency}
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenBridalSuite={() => setIsBridalSuiteOpen(true)}
@@ -134,15 +130,11 @@ export default function App() {
 
         {/* Collection & Product Customizer Grid */}
         <ProductGrid
-          currency={currency}
           onSelectProduct={(product) => setSelectedProduct(product)}
         />
 
         {/* 27+ Styles Wrapping Masterclass Guide */}
         <StyleGuide />
-
-        {/* Fabric Swatches Palette */}
-        <FabricAndColors />
 
         {/* Trademark Protection & South African Atelier Guarantee */}
         <WhyChooseUs />
@@ -159,7 +151,7 @@ export default function App() {
         href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent('Hello! I would like to inquire about ordering from THE INFINITY DRESS™ GROUP.')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-40 p-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2 group border border-emerald-400/40"
+        className="fixed bottom-6 right-6 z-40 p-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-2xl hover:scale-105 transition-all flex items-center gap-2 group border border-emerald-400/50"
         aria-label="Direct WhatsApp Factory Inquiry"
       >
         <MessageCircle className="w-6 h-6 text-white" />
@@ -172,7 +164,7 @@ export default function App() {
       <button
         type="button"
         onClick={() => setIsBridalSuiteOpen(true)}
-        className="lg:hidden fixed bottom-6 right-20 z-40 p-3.5 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-full shadow-2xl transition-transform border border-amber-300/60"
+        className="lg:hidden fixed bottom-6 right-20 z-40 p-3.5 bg-rose-600 hover:bg-rose-500 text-white rounded-full shadow-2xl transition-transform border border-rose-300/60"
         title="Bridal Party Group Order (Discounts)"
         aria-label="Bridal Party Suite"
       >
@@ -183,7 +175,6 @@ export default function App() {
       {/* 1. Dress Customizer Modal */}
       <ProductModal
         product={selectedProduct}
-        currency={currency}
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
         onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
@@ -193,7 +184,6 @@ export default function App() {
       <BridalPartyBuilder
         isOpen={isBridalSuiteOpen}
         onClose={() => setIsBridalSuiteOpen(false)}
-        currency={currency}
         onAddAllToCart={handleAddAllToCart}
       />
 
@@ -208,7 +198,6 @@ export default function App() {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         items={cartItems}
-        currency={currency}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveItem}
         onOpenCheckout={() => {
@@ -226,7 +215,6 @@ export default function App() {
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
         cartItems={cartItems}
-        currency={currency}
         onOrderSuccess={() => {
           setIsCheckoutOpen(false);
           showToast('Order submitted to WhatsApp successfully!');

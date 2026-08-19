@@ -1,62 +1,61 @@
 import React, { useState } from 'react';
-import { Star, Eye, Sparkles, MessageCircle } from 'lucide-react';
-import { Currency, Product } from '../types';
+import { Eye, Sparkles, Check, Heart } from 'lucide-react';
+import { Product } from '../types';
 import { CURRENCIES } from '../utils/order';
-import { COLOR_SWATCHES, COMPANY_DETAILS } from '../data/products';
 
 interface ProductCardProps {
   product: Product;
-  currency: Currency;
-  onSelectProduct: (product: Product) => void;
+  onSelect: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
-  product,
-  currency,
-  onSelectProduct,
-}) => {
-  const [activeImageSide, setActiveImageSide] = useState<'front' | 'back'>('front');
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect }) => {
+  const [currentView, setCurrentView] = useState<'front' | 'back'>('front');
+  const [isHovered, setIsHovered] = useState(false);
 
-  const currencyFormatter = CURRENCIES[currency].format;
-  const hasBackImage = Boolean(product.images.back);
-  const currentImage = activeImageSide === 'back' && product.images.back ? product.images.back : product.images.front;
+  const currentImage =
+    currentView === 'back' && product.images.back
+      ? product.images.back
+      : isHovered && product.images.back
+      ? product.images.back
+      : product.images.front;
 
-  const sampleColors = COLOR_SWATCHES.filter((c) => product.availableColors.includes(c.id)).slice(0, 6);
+  const currencyFormatter = CURRENCIES['ZAR'].format;
 
   return (
     <div
       id={`product-card-${product.id}`}
-      className="group bg-stone-900 rounded-lg overflow-hidden border border-stone-800 hover:border-amber-400/40 transition-all duration-300 flex flex-col shadow-md hover:shadow-xl"
+      className="group relative bg-white rounded-2xl overflow-hidden border border-rose-100/90 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image Showcase Container */}
-      <div className="relative w-full aspect-[3/4] bg-stone-950 overflow-hidden">
+      {/* Image Showcase */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-rose-50/50">
         <img
           src={currentImage}
-          alt={product.images.alt}
-          className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+          alt={product.name}
+          className="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"
         />
 
-        {/* Badge */}
-        {product.badge && (
-          <div className="absolute top-3 left-3 bg-stone-950/80 backdrop-blur-md border border-amber-400/50 text-amber-300 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded shadow-sm">
-            {product.badge}
+        {/* Badge: Best Seller or Exclusive */}
+        {product.isBestSeller && (
+          <div className="absolute top-3 left-3 bg-rose-500 text-white text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-white" />
+            <span>Best Seller</span>
           </div>
         )}
 
-        {/* Front / Back Photo Switcher (Especially for Claire Lace Dress) */}
-        {hasBackImage && (
-          <div className="absolute top-3 right-3 flex items-center bg-stone-950/80 backdrop-blur-md rounded-md p-0.5 border border-stone-700/60 text-xs">
+        {/* Front / Back Toggle Pill (if back image exists) */}
+        {product.images.back && (
+          <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md rounded-full p-0.5 border border-rose-100 flex items-center shadow-xs">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveImageSide('front');
+                setCurrentView('front');
               }}
-              className={`px-2 py-1 rounded text-[11px] font-medium transition-colors ${
-                activeImageSide === 'front'
-                  ? 'bg-amber-400 text-stone-950 font-bold'
-                  : 'text-stone-300 hover:text-white'
+              className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full transition-colors ${
+                currentView === 'front' ? 'bg-rose-500 text-white' : 'text-stone-600 hover:text-rose-600'
               }`}
             >
               Front
@@ -65,112 +64,79 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveImageSide('back');
+                setCurrentView('back');
               }}
-              className={`px-2 py-1 rounded text-[11px] font-medium transition-colors ${
-                activeImageSide === 'back'
-                  ? 'bg-amber-400 text-stone-950 font-bold'
-                  : 'text-stone-300 hover:text-white'
+              className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full transition-colors ${
+                currentView === 'back' ? 'bg-rose-500 text-white' : 'text-stone-600 hover:text-rose-600'
               }`}
             >
-              Back View
+              Back
             </button>
           </div>
         )}
 
-        {/* Hover Quick Action Overlay */}
-        <div className="absolute inset-0 bg-stone-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-4">
-          <button
-            type="button"
-            onClick={() => onSelectProduct(product)}
-            className="w-full max-w-[200px] py-2.5 px-4 rounded bg-stone-900/90 hover:bg-stone-900 text-amber-300 border border-amber-400/50 font-semibold text-xs tracking-wider uppercase shadow-lg backdrop-blur-sm flex items-center justify-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-transform"
-          >
-            <Eye className="w-4 h-4 text-amber-300" />
-            <span>Customize Dress</span>
-          </button>
-        </div>
+        {/* Quick View Button */}
+        <button
+          type="button"
+          onClick={() => onSelect(product)}
+          className="absolute bottom-3 right-3 bg-white/95 hover:bg-rose-50 text-stone-800 p-2 rounded-full shadow-md border border-rose-100 transition-transform active:scale-95"
+          title="Customize & Order"
+        >
+          <Eye className="w-4 h-4 text-rose-600" />
+        </button>
       </div>
 
-      {/* Product Information */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+      {/* Product Content Details */}
+      <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
         <div>
-          {/* Rating */}
-          <div className="flex items-center gap-1.5 text-xs text-stone-400 mb-1.5">
-            <div className="flex items-center text-amber-400">
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
-            </div>
-            <span className="font-semibold text-stone-200">{product.rating.toFixed(1)}</span>
-            <span>({product.reviewCount} reviews)</span>
+          <div className="flex items-center justify-between text-[11px] text-stone-500 uppercase tracking-wider mb-1">
+            <span>{product.fabricGrade}</span>
+            <span className="text-rose-600 font-semibold">{product.category}</span>
           </div>
 
-          {/* Product Title */}
-          <h3 className="font-serif text-lg font-bold text-white group-hover:text-amber-300 transition-colors leading-snug">
+          <h3
+            onClick={() => onSelect(product)}
+            className="font-serif text-lg font-bold text-stone-900 group-hover:text-rose-600 transition-colors cursor-pointer"
+          >
             {product.name}
           </h3>
 
-          {/* Tagline */}
-          <p className="mt-1 text-xs text-stone-300 line-clamp-2 leading-relaxed">
-            {product.tagline}
+          <p className="text-xs text-stone-600 mt-1 line-clamp-2 leading-relaxed">
+            {product.shortDescription}
           </p>
-
-          {/* Color Swatch Preview Dots */}
-          <div className="mt-3.5 flex items-center gap-1.5">
-            <span className="text-[11px] text-stone-400 mr-1">Colors:</span>
-            {sampleColors.map((color) => (
-              <span
-                key={color.id}
-                title={color.name}
-                className="w-4 h-4 rounded-full border border-stone-700 shadow-sm"
-                style={{ backgroundColor: color.hex }}
-              />
-            ))}
-            {product.availableColors.length > 6 && (
-              <span className="text-[10px] text-stone-400 font-medium ml-0.5">
-                +{product.availableColors.length - 6} more
-              </span>
-            )}
-          </div>
         </div>
 
-        {/* Pricing & Actions */}
-        <div className="pt-3 border-t border-stone-800 flex flex-col gap-3">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-xs text-stone-400 uppercase tracking-wider block">Price from</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-lg font-bold text-amber-300">
-                  {currencyFormatter(product.basePriceZar)}
-                </span>
-                <span className="text-xs text-stone-500 line-through">
-                  {currencyFormatter(product.originalPriceZar)}
-                </span>
-              </div>
-            </div>
-            <span className="text-[11px] text-emerald-400 font-medium bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/40">
-              Save 15%
+        {/* Features Highlights */}
+        <div className="pt-2 border-t border-rose-50 flex flex-wrap gap-1.5">
+          {product.features.slice(0, 2).map((feat, idx) => (
+            <span
+              key={idx}
+              className="inline-flex items-center gap-1 text-[10px] font-medium text-stone-600 bg-rose-50/80 px-2 py-0.5 rounded-full"
+            >
+              <Check className="w-2.5 h-2.5 text-rose-500" />
+              <span>{feat}</span>
+            </span>
+          ))}
+        </div>
+
+        {/* Bottom Price and CTA */}
+        <div className="pt-3 border-t border-rose-100/80 flex items-center justify-between">
+          <div>
+            <span className="text-[10px] text-stone-400 uppercase tracking-wider block">
+              From
+            </span>
+            <span className="font-serif text-xl font-bold text-stone-900">
+              {currencyFormatter(product.basePriceZar)}
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => onSelectProduct(product)}
-              className="w-full py-2.5 px-3 rounded bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-stone-950" />
-              <span>Customize</span>
-            </button>
-
-            <a
-              href={`https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(`Hello! I am interested in the ${product.name}. Could you please send more information and fabric swatches?`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2.5 px-3 rounded bg-stone-800 hover:bg-emerald-900 text-stone-200 hover:text-emerald-200 font-medium text-xs border border-stone-700 hover:border-emerald-700/60 transition-colors flex items-center justify-center gap-1.5 text-center"
-            >
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
-              <span>WhatsApp</span>
-            </a>
-          </div>
+          <button
+            type="button"
+            onClick={() => onSelect(product)}
+            className="px-4 py-2 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-2xs hover:shadow-xs"
+          >
+            Customize
+          </button>
         </div>
       </div>
     </div>

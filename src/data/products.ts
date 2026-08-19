@@ -8,7 +8,7 @@ import kiaraImg from '../assets/images/kiara_infinity_dress_1787132284347.jpg';
 import vintageWrapImg from '../assets/images/vintage_wrap_blue_1787132313065.jpg';
 import landingHeroImg from '../assets/images/infinity_landing_hero_1787132163967.jpg';
 
-export { landingHeroImg };
+export { landingHeroImg, landingHeroImg as HERO_IMAGE, STYLE_TUTORIALS as WRAPPING_STYLES };
 
 export const COMPANY_DETAILS = {
   name: 'THE INFINITY DRESS™ GROUP',

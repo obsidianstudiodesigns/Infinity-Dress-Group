@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { X, Ruler, Sparkles, CheckCircle2 } from 'lucide-react';
-import { DressSize } from '../types';
 
 interface SizeGuideModalProps {
   isOpen: boolean;
@@ -57,24 +56,24 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
   return (
     <div
       id="size-guide-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/85 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="relative bg-stone-900 text-stone-100 rounded-xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-stone-800 shadow-2xl my-auto"
+        className="relative bg-white text-stone-800 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 sm:p-6 bg-stone-950 border-b border-stone-800 flex items-center justify-between">
+        <div className="p-5 sm:p-6 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-400 text-stone-950">
+            <div className="p-2.5 rounded-xl bg-rose-500 text-white shadow-xs">
               <Ruler className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-serif text-2xl font-bold text-white">
+              <h2 className="font-serif text-2xl font-bold text-stone-900">
                 Official Size & Measurement Guide
               </h2>
-              <p className="text-xs text-stone-400">
+              <p className="text-xs text-stone-600">
                 Because our dresses feature 4-way elastic stretch, sizing is forgiving and comfortable.
               </p>
             </div>
@@ -83,7 +82,7 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full bg-stone-900 text-stone-400 hover:text-white transition-colors"
+            className="p-2 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -92,50 +91,50 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
 
         {/* Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto max-h-[75vh] space-y-6">
-          {/* Interactive Fit Calculator */}
-          <div className="p-5 rounded-xl bg-stone-950 border border-amber-500/40">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-300 mb-3">
-              <Sparkles className="w-4 h-4" />
+          {/* Smart Fit Calculator */}
+          <div className="p-5 rounded-2xl bg-rose-50/50 border border-rose-200">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-700 mb-3">
+              <Sparkles className="w-4 h-4 text-rose-500" />
               <span>Smart Sizing Calculator</span>
             </div>
 
             <form onSubmit={handleCalculateSize} className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
               <div>
-                <label className="block text-xs text-stone-400 mb-1">Your Bust Measurement (cm)</label>
+                <label className="block text-xs text-stone-600 font-medium mb-1">Bust Measurement (cm)</label>
                 <input
                   type="number"
                   placeholder="e.g. 94"
                   value={inputBust}
                   onChange={(e) => setInputBust(e.target.value)}
-                  className="w-full bg-stone-800 rounded px-3 py-2 text-sm text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white rounded-lg px-3 py-2 text-sm text-stone-900 border border-rose-200 focus:border-rose-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-stone-400 mb-1">Your Waist Measurement (cm)</label>
+                <label className="block text-xs text-stone-600 font-medium mb-1">Waist Measurement (cm)</label>
                 <input
                   type="number"
                   placeholder="e.g. 78"
                   value={inputWaist}
                   onChange={(e) => setInputWaist(e.target.value)}
-                  className="w-full bg-stone-800 rounded px-3 py-2 text-sm text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
+                  className="w-full bg-white rounded-lg px-3 py-2 text-sm text-stone-900 border border-rose-200 focus:border-rose-500 focus:outline-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="py-2.5 px-4 rounded bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs tracking-wider uppercase transition-colors"
+                className="py-2.5 px-4 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wider uppercase transition-colors shadow-2xs"
               >
                 Calculate My Size
               </button>
             </form>
 
             {calculatedSize && (
-              <div className="mt-4 p-3.5 rounded-lg bg-emerald-950/80 border border-emerald-500/60 flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div className="mt-4 p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div className="text-xs">
-                  <span className="text-stone-300">Recommended Size for You:</span>
-                  <div className="text-base font-bold text-white mt-0.5">{calculatedSize}</div>
+                  <span className="text-stone-600 font-medium">Recommended Size for You:</span>
+                  <div className="text-base font-bold text-stone-900 mt-0.5">{calculatedSize}</div>
                 </div>
               </div>
             )}
@@ -143,13 +142,13 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
 
           {/* Size Conversion Table */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-300 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-stone-500 mb-3">
               Standard South African, UK & US Size Chart
             </h3>
 
-            <div className="overflow-x-auto rounded-lg border border-stone-800">
-              <table className="w-full text-xs text-left text-stone-200">
-                <thead className="bg-stone-950 text-[11px] uppercase tracking-wider text-amber-300 font-bold border-b border-stone-800">
+            <div className="overflow-x-auto rounded-xl border border-rose-100 shadow-2xs">
+              <table className="w-full text-xs text-left text-stone-700">
+                <thead className="bg-rose-50 text-[11px] uppercase tracking-wider text-rose-900 font-bold border-b border-rose-200">
                   <tr>
                     <th className="py-3 px-3">Size</th>
                     <th className="py-3 px-3">South Africa</th>
@@ -160,16 +159,16 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
                     <th className="py-3 px-3">Hips</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-800 bg-stone-900/50">
+                <tbody className="divide-y divide-rose-100 bg-white">
                   {sizeTable.map((row) => (
-                    <tr key={row.size} className="hover:bg-stone-800/60 transition-colors">
-                      <td className="py-2.5 px-3 font-bold text-amber-400">{row.size}</td>
-                      <td className="py-2.5 px-3 font-semibold text-white">{row.sa}</td>
-                      <td className="py-2.5 px-3 text-stone-300">{row.uk}</td>
-                      <td className="py-2.5 px-3 text-stone-300">{row.us}</td>
-                      <td className="py-2.5 px-3 text-stone-300">{row.bust}</td>
-                      <td className="py-2.5 px-3 text-stone-300">{row.waist}</td>
-                      <td className="py-2.5 px-3 text-stone-300">{row.hips}</td>
+                    <tr key={row.size} className="hover:bg-rose-50/50 transition-colors">
+                      <td className="py-2.5 px-3 font-bold text-rose-600">{row.size}</td>
+                      <td className="py-2.5 px-3 font-semibold text-stone-900">{row.sa}</td>
+                      <td className="py-2.5 px-3 text-stone-600">{row.uk}</td>
+                      <td className="py-2.5 px-3 text-stone-600">{row.us}</td>
+                      <td className="py-2.5 px-3 text-stone-600">{row.bust}</td>
+                      <td className="py-2.5 px-3 text-stone-600">{row.waist}</td>
+                      <td className="py-2.5 px-3 text-stone-600">{row.hips}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -178,41 +177,41 @@ export const SizeGuideModal: React.FC<SizeGuideModalProps> = ({ isOpen, onClose 
           </div>
 
           {/* How to Measure Length */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-stone-300">
-            <div className="p-4 rounded-lg bg-stone-950 border border-stone-800 space-y-2">
-              <h4 className="font-bold text-white flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-stone-800 text-amber-400 font-bold text-xs flex items-center justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-stone-600">
+            <div className="p-4 rounded-xl bg-rose-50/40 border border-rose-100 space-y-2">
+              <h4 className="font-bold text-stone-900 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center">
                   1
                 </span>
                 How to Measure Length (Waist-to-Floor)
               </h4>
-              <p className="text-stone-400 leading-relaxed">
+              <p className="text-stone-600 leading-relaxed">
                 Place the measuring tape at your natural waist (narrowest part of your torso, roughly 2 inches above the belly button) and measure straight down to the floor while wearing your intended wedding heels. Standard Maxi is <strong>110cm</strong>.
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-stone-950 border border-stone-800 space-y-2">
-              <h4 className="font-bold text-white flex items-center gap-2">
-                <span className="w-5 h-5 rounded-full bg-stone-800 text-amber-400 font-bold text-xs flex items-center justify-center">
+            <div className="p-4 rounded-xl bg-rose-50/40 border border-rose-100 space-y-2">
+              <h4 className="font-bold text-stone-900 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center">
                   2
                 </span>
                 Maternity & Plus Size Bridesmaids
               </h4>
-              <p className="text-stone-400 leading-relaxed">
-                Our 4-way stretch knit effortlessly expands across baby bumps and curvier busts. If you are between sizes, choose the larger size or select "Custom Measurements" in the dress customizer.
+              <p className="text-stone-600 leading-relaxed">
+                Our 4-way stretch knit expands gracefully across baby bumps and curvier busts. If you are between sizes, choose the larger size or select "Custom Measurements" in the customizer.
               </p>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-stone-950 border-t border-stone-800 text-center">
+        <div className="p-4 bg-rose-50/60 border-t border-rose-100 text-center">
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2.5 rounded bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs tracking-wider uppercase transition-colors"
+            className="px-6 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wider uppercase transition-colors shadow-2xs"
           >
-            Got It, Back to Customizer
+            Got It, Back to Dress Customizer
           </button>
         </div>
       </div>

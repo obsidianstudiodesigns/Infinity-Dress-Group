@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { X, Check, Star, ShieldCheck, Ruler, MessageCircle, ShoppingBag, Plus, Minus } from 'lucide-react';
-import { ColorSwatch, Currency, DressLength, DressSize, LengthOption, Product, ProductAddOn } from '../types';
-import { CURRENCIES } from '../utils/order';
+import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart } from 'lucide-react';
+import { ColorSwatch, DressLength, DressSize, LengthOption, Product, ProductAddOn } from '../types';
 import { COLOR_SWATCHES, LENGTH_OPTIONS, STANDARD_ADD_ONS, COMPANY_DETAILS } from '../data/products';
+import { CURRENCIES } from '../utils/order';
 
 interface ProductModalProps {
   product: Product | null;
-  currency: Currency;
+  currency?: any;
   onClose: () => void;
   onAddToCart: (item: {
     productId: string;
@@ -15,13 +15,6 @@ interface ProductModalProps {
     color: ColorSwatch;
     size: DressSize;
     length: LengthOption;
-    customMeasurements?: {
-      bust?: string;
-      underbust?: string;
-      waist?: string;
-      waistToFloor?: string;
-      notes?: string;
-    };
     bridesmaidName?: string;
     addOns: ProductAddOn[];
     quantity: number;
@@ -33,101 +26,57 @@ interface ProductModalProps {
 
 export const ProductModal: React.FC<ProductModalProps> = ({
   product,
-  currency,
   onClose,
   onAddToCart,
   onOpenSizeGuide,
 }) => {
   if (!product) return null;
 
-  const availableColorObjects = COLOR_SWATCHES.filter((c) =>
-    product.availableColors.includes(c.id)
-  );
-
-  const [selectedColor, setSelectedColor] = useState<ColorSwatch>(
-    availableColorObjects[0] || COLOR_SWATCHES[0]
-  );
+  const [activeImage, setActiveImage] = useState<string>(product.images.front);
+  const [selectedColor, setSelectedColor] = useState<ColorSwatch>(COLOR_SWATCHES[0]);
   const [selectedSize, setSelectedSize] = useState<DressSize>('M (36-38)');
-  const [selectedLength, setSelectedLength] = useState<DressLength>('maxi');
-  const [activeImageSide, setActiveImageSide] = useState<'front' | 'back'>('front');
-  const [quantity, setQuantity] = useState<number>(1);
+  const [selectedLengthKey, setSelectedLengthKey] = useState<DressLength>('maxi');
+  const [selectedAddOns, setSelectedAddOns] = useState<ProductAddOn[]>([]);
   const [bridesmaidName, setBridesmaidName] = useState<string>('');
+  const [quantity, setQuantity] = useState<number>(1);
+  const [customBustWaist, setCustomBustWaist] = useState<string>('');
 
-  // Custom Measurements State
-  const [bust, setBust] = useState<string>('');
-  const [underbust, setUnderbust] = useState<string>('');
-  const [waist, setWaist] = useState<string>('');
-  const [waistToFloor, setWaistToFloor] = useState<string>('110');
-  const [fitNotes, setFitNotes] = useState<string>('');
-
-  // Add-ons State
-  const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
-
-  const toggleAddOn = (id: string) => {
-    setSelectedAddOnIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  const currencyFormatter = CURRENCIES[currency].format;
-  const currentLengthOption = LENGTH_OPTIONS[selectedLength];
+  const currencyFormatter = CURRENCIES['ZAR'].format;
+  const currentLength = LENGTH_OPTIONS[selectedLengthKey];
 
   // Calculate Unit Price
-  const addOnsTotalZar = selectedAddOnIds.reduce((sum, id) => {
-    const addon = STANDARD_ADD_ONS.find((a) => a.id === id);
-    return sum + (addon ? addon.priceZar : 0);
-  }, 0);
+  const addOnsTotal = selectedAddOns.reduce((acc, a) => acc + a.priceZar, 0);
+  const unitPrice = product.basePriceZar + currentLength.priceModifierZar + addOnsTotal;
+  const totalPrice = unitPrice * quantity;
 
-  const customSizingFee = selectedSize === 'Custom Measurements' ? 120 : 0;
-  const unitPriceZar = product.basePriceZar + currentLengthOption.priceModifierZar + addOnsTotalZar + customSizingFee;
-  const totalPriceZar = unitPriceZar * quantity;
-
-  const hasBackImage = Boolean(product.images.back);
-  const currentImage = activeImageSide === 'back' && product.images.back ? product.images.back : product.images.front;
+  const toggleAddOn = (addon: ProductAddOn) => {
+    if (selectedAddOns.some((a) => a.id === addon.id)) {
+      setSelectedAddOns(selectedAddOns.filter((a) => a.id !== addon.id));
+    } else {
+      setSelectedAddOns([...selectedAddOns, addon]);
+    }
+  };
 
   const handleAddToCart = () => {
-    const chosenAddOns = STANDARD_ADD_ONS.filter((a) => selectedAddOnIds.includes(a.id));
-
     onAddToCart({
       productId: product.id,
       productName: product.name,
-      image: currentImage,
+      image: product.images.front,
       color: selectedColor,
-      size: selectedSize,
-      length: currentLengthOption,
-      customMeasurements:
-        selectedSize === 'Custom Measurements'
-          ? { bust, underbust, waist, waistToFloor, notes: fitNotes }
-          : undefined,
+      size: selectedSize === 'Custom Measurements' && customBustWaist ? (`Custom (${customBustWaist})` as any) : selectedSize,
+      length: currentLength,
       bridesmaidName: bridesmaidName.trim() || undefined,
-      addOns: chosenAddOns,
+      addOns: selectedAddOns,
       quantity,
-      unitPriceZar,
-      totalPriceZar,
+      unitPriceZar: unitPrice,
+      totalPriceZar: totalPrice,
     });
     onClose();
   };
 
-  const handleInstantWhatsApp = () => {
-    const chosenAddOns = STANDARD_ADD_ONS.filter((a) => selectedAddOnIds.includes(a.id));
-    let msg = `✨ *INQUIRY / ORDER: ${product.name}*\n`;
-    msg += `• *Color:* ${selectedColor.name}\n`;
-    msg += `• *Size:* ${selectedSize}\n`;
-    msg += `• *Length:* ${currentLengthOption.name}\n`;
-    if (selectedSize === 'Custom Measurements') {
-      msg += `• *Custom Sizing:* Bust: ${bust || '-'}cm, Underbust: ${underbust || '-'}cm, Waist: ${waist || '-'}cm, Length: ${waistToFloor || '-'}cm\n`;
-    }
-    if (chosenAddOns.length > 0) {
-      msg += `• *Add-ons:* ${chosenAddOns.map((a) => a.name).join(', ')}\n`;
-    }
-    if (bridesmaidName) {
-      msg += `• *For:* ${bridesmaidName}\n`;
-    }
-    msg += `• *Qty:* ${quantity}\n`;
-    msg += `• *Estimated Total:* ${currencyFormatter(totalPriceZar)}\n\n`;
-    msg += `Please confirm fabric availability and production timeline. Thank you!`;
-
-    const url = `https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(msg)}`;
+  const handleDirectWhatsApp = () => {
+    const text = `Hello! I would like to order the *${product.name}*:\n\n• Color: ${selectedColor.name}\n• Size: ${selectedSize}\n• Length: ${currentLength.name}\n${bridesmaidName ? `• For: ${bridesmaidName}\n` : ''}${selectedAddOns.length ? `• Add-ons: ${selectedAddOns.map((a) => a.name).join(', ')}\n` : ''}• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
+    const url = `https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
 
@@ -144,384 +93,316 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <div
-      id="product-customizer-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/80 backdrop-blur-md overflow-y-auto"
+      id="product-modal-backdrop"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="relative bg-stone-900 text-stone-100 rounded-xl max-w-4xl w-full max-h-[92vh] flex flex-col md:flex-row overflow-hidden border border-stone-800 shadow-2xl my-auto"
+        className="relative bg-white text-stone-800 rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Modal Button */}
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-stone-950/70 text-stone-300 hover:text-white hover:bg-stone-800 transition-colors"
-          aria-label="Close modal"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Left Column: Visual Showcase */}
-        <div className="md:w-1/2 bg-stone-950 flex flex-col justify-between relative min-h-[320px] md:min-h-full">
-          <div className="relative w-full h-full aspect-[3/4] md:aspect-auto">
-            <img
-              src={currentImage}
-              alt={product.images.alt}
-              className="w-full h-full object-cover object-top"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent opacity-80" />
-
-            {/* Front / Back Toggle Buttons */}
-            {hasBackImage && (
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-center gap-2">
-                <div className="bg-stone-950/90 backdrop-blur-md p-1 rounded-lg border border-stone-700/80 flex gap-1 shadow-lg">
-                  <button
-                    type="button"
-                    onClick={() => setActiveImageSide('front')}
-                    className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                      activeImageSide === 'front'
-                        ? 'bg-amber-400 text-stone-950'
-                        : 'text-stone-300 hover:text-white'
-                    }`}
-                  >
-                    Front View
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveImageSide('back')}
-                    className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                      activeImageSide === 'back'
-                        ? 'bg-amber-400 text-stone-950'
-                        : 'text-stone-300 hover:text-white'
-                    }`}
-                  >
-                    Back Criss-Cross View
-                  </button>
-                </div>
-              </div>
-            )}
+        {/* Modal Header */}
+        <div className="p-4 sm:p-5 bg-rose-50/60 border-b border-rose-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-rose-500" />
+            <h2 className="font-serif text-lg sm:text-xl font-bold text-stone-900">
+              Customize Your {product.name}
+            </h2>
           </div>
 
-          {/* Selected Swatch Indicator Banner */}
-          <div className="p-4 bg-stone-950 border-t border-stone-800/80 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2.5">
-              <span
-                className="w-5 h-5 rounded-full border border-stone-600 shadow-sm shrink-0"
-                style={{ backgroundColor: selectedColor.hex }}
-              />
-              <span className="font-medium text-stone-200">
-                Selected Color: <strong className="text-amber-300">{selectedColor.name}</strong>
-              </span>
-            </div>
-            <span className="text-stone-400 text-[11px]">280gsm Heavy Lycra</span>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* Right Column: Customizer Options */}
-        <div className="md:w-1/2 p-5 sm:p-6 overflow-y-auto max-h-[80vh] md:max-h-[88vh] flex flex-col justify-between space-y-6">
-          <div className="space-y-6">
-            {/* Header info */}
-            <div>
-              <div className="flex items-center gap-2 text-xs text-amber-400 mb-1 font-medium">
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <span>Genuine South African Trademark Gown</span>
+        {/* Modal Body */}
+        <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh] grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Left Column: Image Previews */}
+          <div className="md:col-span-5 space-y-3">
+            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-rose-50/40 border border-rose-100">
+              <img
+                src={activeImage}
+                alt={product.name}
+                className="w-full h-full object-cover object-top"
+                referrerPolicy="no-referrer"
+              />
+              <div
+                className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold text-white shadow-xs"
+                style={{ backgroundColor: selectedColor.hex }}
+              >
+                {selectedColor.name}
               </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white leading-tight">
-                {product.name}
-              </h2>
-              <p className="mt-1 text-xs text-stone-300 leading-relaxed">
-                {product.tagline}
-              </p>
             </div>
 
-            {/* Step 1: Select Color Swatch */}
+            {/* Thumbnail Switcher */}
+            {product.images.back && (
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveImage(product.images.front)}
+                  className={`p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    activeImage === product.images.front
+                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold'
+                      : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
+                  }`}
+                >
+                  <span>Front View</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveImage(product.images.back!)}
+                  className={`p-1.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                    activeImage === product.images.back
+                      ? 'border-rose-500 bg-rose-50 text-rose-800 font-bold'
+                      : 'border-rose-100 bg-white text-stone-600 hover:border-rose-300'
+                  }`}
+                >
+                  <span>Back View</span>
+                </button>
+              </div>
+            )}
+
+            <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-100 text-xs text-stone-600 space-y-1">
+              <div className="flex items-center gap-1.5 text-rose-700 font-semibold">
+                <Heart className="w-3.5 h-3.5 fill-rose-400 text-rose-500" />
+                <span>280gsm Anti-Crease Heavy Knit</span>
+              </div>
+              <p className="text-[11px] text-stone-500 leading-tight">
+                No ironing required. Flattering opacity and drape guaranteed.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Customization Options */}
+          <div className="md:col-span-7 space-y-5 text-xs">
+            {/* 1. Color Swatches Selection */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-stone-200">
-                  1. Select Color Swatch ({availableColorObjects.length} Available)
+                <label className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">
+                  1. Choose Color Swatch: <span className="text-rose-600 font-semibold">{selectedColor.name}</span>
                 </label>
-                <span className="text-xs text-amber-300 font-semibold">{selectedColor.name}</span>
               </div>
 
-              <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-36 overflow-y-auto p-1.5 bg-stone-950 rounded-lg border border-stone-800">
-                {availableColorObjects.map((swatch) => {
+              <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-28 overflow-y-auto p-1 bg-rose-50/30 rounded-lg border border-rose-100">
+                {COLOR_SWATCHES.map((swatch) => {
                   const isSelected = selectedColor.id === swatch.id;
                   return (
                     <button
                       key={swatch.id}
                       type="button"
                       onClick={() => setSelectedColor(swatch)}
-                      title={swatch.name}
-                      className={`relative aspect-square rounded-md transition-all flex items-center justify-center border-2 ${
+                      className={`h-9 rounded-md relative flex items-center justify-center border transition-all ${
                         isSelected
-                          ? 'border-amber-400 scale-110 shadow-md ring-2 ring-amber-400/40'
-                          : 'border-transparent hover:border-stone-500'
+                          ? 'border-rose-600 ring-2 ring-rose-300 scale-105 shadow-xs'
+                          : 'border-stone-200 hover:scale-105'
                       }`}
                       style={{ backgroundColor: swatch.hex }}
+                      title={swatch.name}
                     >
-                      {isSelected && (
-                        <Check
-                          className={`w-3.5 h-3.5 stroke-[3] ${
-                            ['pure-ivory', 'champagne-nude', 'dusty-rose', 'blush-pink', 'silver-grey'].includes(
-                              swatch.id
-                            )
-                              ? 'text-stone-900'
-                              : 'text-white'
-                          }`}
-                        />
-                      )}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-white drop-shadow-md" />}
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Step 2: Select Size */}
+            {/* 2. Dress Length */}
+            <div>
+              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2">
+                2. Select Length (Waist-to-Hem)
+              </label>
+
+              <div className="grid grid-cols-2 gap-2">
+                {(Object.entries(LENGTH_OPTIONS) as [DressLength, LengthOption][]).map(([key, opt]) => {
+                  const isSelected = selectedLengthKey === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSelectedLengthKey(key)}
+                      className={`p-2.5 rounded-lg border text-left transition-all ${
+                        isSelected
+                          ? 'border-rose-500 bg-rose-50/80 text-rose-900 ring-1 ring-rose-400'
+                          : 'border-rose-100 bg-white text-stone-700 hover:border-rose-300'
+                      }`}
+                    >
+                      <div className="font-bold">{opt.name}</div>
+                      <div className="text-[11px] text-stone-500 mt-0.5 flex items-center justify-between">
+                        <span>{opt.description}</span>
+                        {opt.priceModifierZar > 0 && (
+                          <span className="text-rose-600 font-semibold">
+                            +{currencyFormatter(opt.priceModifierZar)}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. Dress Size */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-stone-200">
-                  2. Choose Size
+                <label className="font-bold text-stone-900 uppercase tracking-wider text-[11px]">
+                  3. Select Size (South African)
                 </label>
                 <button
                   type="button"
                   onClick={onOpenSizeGuide}
-                  className="text-xs text-amber-300 hover:underline flex items-center gap-1 font-medium"
+                  className="inline-flex items-center gap-1 text-rose-600 hover:text-rose-700 font-semibold text-[11px]"
                 >
-                  <Ruler className="w-3.5 h-3.5" />
-                  <span>Size & Fit Guide</span>
+                  <Ruler className="w-3 h-3 text-rose-500" />
+                  <span>Size Chart / Fit Guide</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {sizes.map((sz) => {
-                  const isSelected = selectedSize === sz;
-                  const isCustom = sz === 'Custom Measurements';
+              <div className="grid grid-cols-4 gap-1.5">
+                {sizes.map((s) => {
+                  const isSelected = selectedSize === s;
                   return (
                     <button
-                      key={sz}
+                      key={s}
                       type="button"
-                      onClick={() => setSelectedSize(sz)}
-                      className={`py-2 px-2.5 rounded text-xs font-semibold transition-all border text-center ${
+                      onClick={() => setSelectedSize(s)}
+                      className={`py-2 px-1 rounded-lg border text-center font-medium transition-all ${
                         isSelected
-                          ? 'bg-amber-400 text-stone-950 border-amber-400 shadow-sm'
-                          : 'bg-stone-800 text-stone-300 border-stone-700 hover:border-stone-500'
-                      } ${isCustom ? 'col-span-2 sm:col-span-4' : ''}`}
+                          ? 'border-rose-500 bg-rose-600 text-white font-bold shadow-2xs'
+                          : 'border-rose-100 bg-white text-stone-700 hover:bg-rose-50'
+                      }`}
                     >
-                      {sz}
-                      {isCustom && <span className="ml-1 text-[10px] opacity-80">(Made to your exact cm)</span>}
+                      {s}
                     </button>
                   );
                 })}
               </div>
 
-              {/* Custom Measurements Input Fields */}
               {selectedSize === 'Custom Measurements' && (
-                <div className="mt-3 p-3.5 rounded-lg bg-stone-950 border border-amber-500/40 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-300">
-                      Tailored Custom Sizing (Bespoke Cut)
-                    </span>
-                    <span className="text-[11px] text-stone-400">+R120</span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div>
-                      <label className="block text-[10px] text-stone-400 mb-1">Bust (cm)</label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 92"
-                        value={bust}
-                        onChange={(e) => setBust(e.target.value)}
-                        className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-stone-400 mb-1">Underbust (cm)</label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 80"
-                        value={underbust}
-                        onChange={(e) => setUnderbust(e.target.value)}
-                        className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-stone-400 mb-1">Waist (cm)</label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 74"
-                        value={waist}
-                        onChange={(e) => setWaist(e.target.value)}
-                        className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-stone-400 mb-1">Waist-to-Floor (cm)</label>
-                      <input
-                        type="number"
-                        placeholder="e.g. 115"
-                        value={waistToFloor}
-                        onChange={(e) => setWaistToFloor(e.target.value)}
-                        className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-stone-400 mb-1">Special fit notes (e.g. pregnancy, tall, petite)</label>
-                    <input
-                      type="text"
-                      placeholder="Optional notes for our dressmakers"
-                      value={fitNotes}
-                      onChange={(e) => setFitNotes(e.target.value)}
-                      className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-xs text-white border border-stone-700 focus:border-amber-400 focus:outline-none"
-                    />
-                  </div>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    placeholder="Enter Bust, Waist, & Waist-to-Floor cm (e.g. 96cm, 78cm, 114cm)"
+                    value={customBustWaist}
+                    onChange={(e) => setCustomBustWaist(e.target.value)}
+                    className="w-full bg-rose-50/50 rounded-lg px-3 py-2 text-xs text-stone-900 border border-rose-200 focus:outline-none focus:border-rose-500"
+                  />
                 </div>
               )}
             </div>
 
-            {/* Step 3: Dress Length */}
+            {/* 4. Bridesmaid Name Tag (Optional) */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-200 mb-2">
-                3. Choose Length
+              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-1">
+                4. Bridesmaid Name / Label (Optional)
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {product.lengths.map((lenKey) => {
-                  const lenOption = LENGTH_OPTIONS[lenKey];
-                  const isSelected = selectedLength === lenKey;
-                  return (
-                    <button
-                      key={lenKey}
-                      type="button"
-                      onClick={() => setSelectedLength(lenKey)}
-                      className={`p-2.5 rounded text-left transition-all border ${
-                        isSelected
-                          ? 'bg-amber-950/50 border-amber-400 ring-1 ring-amber-400/50 text-white'
-                          : 'bg-stone-800 text-stone-300 border-stone-700 hover:border-stone-500'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between text-xs font-bold">
-                        <span>{lenOption.name}</span>
-                        {lenOption.priceModifierZar !== 0 && (
-                          <span className={lenOption.priceModifierZar > 0 ? 'text-amber-400' : 'text-emerald-400'}>
-                            {lenOption.priceModifierZar > 0 ? `+R${lenOption.priceModifierZar}` : `-R${Math.abs(lenOption.priceModifierZar)}`}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[11px] text-stone-400 mt-0.5">{lenOption.description}</p>
-                    </button>
-                  );
-                })}
-              </div>
+              <input
+                type="text"
+                placeholder="e.g. Sarah - Maid of Honor"
+                value={bridesmaidName}
+                onChange={(e) => setBridesmaidName(e.target.value)}
+                className="w-full bg-white rounded-lg px-3 py-2 text-xs text-stone-900 border border-rose-200 focus:outline-none focus:border-rose-500"
+              />
             </div>
 
-            {/* Step 4: Optional Add-ons */}
+            {/* 5. Add-Ons Selection */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-200 mb-2">
-                4. Optional Add-ons & Matching Accessories
+              <label className="block font-bold text-stone-900 uppercase tracking-wider text-[11px] mb-2">
+                5. Matching Accessories & Add-Ons
               </label>
-              <div className="space-y-2">
-                {STANDARD_ADD_ONS.map((addOn) => {
-                  const isChecked = selectedAddOnIds.includes(addOn.id);
+
+              <div className="space-y-1.5">
+                {STANDARD_ADD_ONS.map((addon) => {
+                  const isChecked = selectedAddOns.some((a) => a.id === addon.id);
                   return (
                     <label
-                      key={addOn.id}
-                      className={`flex items-start gap-3 p-2.5 rounded-lg border cursor-pointer transition-colors ${
+                      key={addon.id}
+                      className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-all ${
                         isChecked
-                          ? 'bg-stone-800/90 border-amber-400 text-white'
-                          : 'bg-stone-950 border-stone-800 text-stone-300 hover:border-stone-700'
+                          ? 'border-rose-400 bg-rose-50/70 text-rose-900'
+                          : 'border-rose-100 bg-white text-stone-700 hover:bg-rose-50/40'
                       }`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => toggleAddOn(addOn.id)}
-                        className="mt-0.5 rounded border-stone-600 text-amber-500 focus:ring-amber-400 focus:ring-offset-stone-900"
-                      />
-                      <div className="flex-1 text-xs">
-                        <div className="flex items-center justify-between font-semibold">
-                          <span>{addOn.name}</span>
-                          <span className="text-amber-300">+{currencyFormatter(addOn.priceZar)}</span>
+                      <div className="flex items-center gap-2.5">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => toggleAddOn(addon)}
+                          className="rounded text-rose-600 focus:ring-rose-400 border-stone-300"
+                        />
+                        <div>
+                          <div className="font-semibold text-stone-900">{addon.name}</div>
+                          <div className="text-[10px] text-stone-500">{addon.description}</div>
                         </div>
-                        <p className="text-[11px] text-stone-400 mt-0.5">{addOn.description}</p>
                       </div>
+                      <span className="font-bold text-rose-600">
+                        +{currencyFormatter(addon.priceZar)}
+                      </span>
                     </label>
                   );
                 })}
               </div>
             </div>
+          </div>
+        </div>
 
-            {/* Step 5: Bridesmaid Label (Optional) */}
+        {/* Modal Footer */}
+        <div className="p-4 sm:p-5 bg-rose-50/80 border-t border-rose-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-stone-200 mb-1">
-                5. Bridesmaid Name / Label (Optional)
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Kelly - Maid of Honour, Nicole - Bridesmaid"
-                value={bridesmaidName}
-                onChange={(e) => setBridesmaidName(e.target.value)}
-                className="w-full bg-stone-950 text-xs text-white rounded-lg px-3 py-2 border border-stone-800 focus:border-amber-400 focus:outline-none"
-              />
+              <span className="text-[10px] text-stone-500 uppercase tracking-wider block">
+                Total Price (ZAR)
+              </span>
+              <span className="font-serif text-2xl font-bold text-stone-900">
+                {currencyFormatter(totalPrice)}
+              </span>
+            </div>
+
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border border-rose-200">
+              <button
+                type="button"
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="text-stone-500 hover:text-stone-900 font-bold px-1"
+              >
+                -
+              </button>
+              <span className="font-bold text-stone-900 px-1 text-xs">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity(quantity + 1)}
+                className="text-stone-500 hover:text-stone-900 font-bold px-1"
+              >
+                +
+              </button>
             </div>
           </div>
 
-          {/* Footer Bar: Quantity, Total & Buttons */}
-          <div className="pt-4 border-t border-stone-800 space-y-3">
-            <div className="flex items-center justify-between">
-              {/* Quantity Counter */}
-              <div className="flex items-center gap-3 bg-stone-950 p-1 rounded-lg border border-stone-800">
-                <button
-                  type="button"
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-1.5 text-stone-400 hover:text-white rounded hover:bg-stone-800 transition-colors"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-xs font-bold text-white px-2">{quantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="p-1.5 text-stone-400 hover:text-white rounded hover:bg-stone-800 transition-colors"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
-              </div>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className="flex-1 sm:flex-initial px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <ShoppingBag className="w-4 h-4 text-white" />
+              <span>Add to Cart</span>
+            </button>
 
-              {/* Total Calculation */}
-              <div className="text-right">
-                <span className="text-[11px] text-stone-400 uppercase tracking-wider block">
-                  Total ({quantity} dress{quantity > 1 ? 'es' : ''})
-                </span>
-                <span className="text-xl font-bold text-amber-300">
-                  {currencyFormatter(totalPriceZar)}
-                </span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className="w-full py-3 px-4 rounded bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 shadow-md"
-              >
-                <ShoppingBag className="w-4 h-4 text-stone-950" />
-                <span>Add To Cart</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleInstantWhatsApp}
-                className="w-full py-3 px-4 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs tracking-wider uppercase border border-emerald-500/50 transition-all flex items-center justify-center gap-2 shadow-md"
-              >
-                <MessageCircle className="w-4 h-4 text-white" />
-                <span>Order via WhatsApp</span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleDirectWhatsApp}
+              className="flex-1 sm:flex-initial px-5 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+              title="Order on WhatsApp"
+            >
+              <MessageCircle className="w-4 h-4 text-white" />
+              <span>WhatsApp</span>
+            </button>
           </div>
         </div>
       </div>

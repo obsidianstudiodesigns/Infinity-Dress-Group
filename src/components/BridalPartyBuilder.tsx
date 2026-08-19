@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Sparkles, UserPlus, Trash2, CheckCircle2, MessageCircle, ShoppingBag, X } from 'lucide-react';
-import { BridalPartyMember, ColorSwatch, Currency, DressLength, DressSize, LengthOption, ProductAddOn } from '../types';
+import { BridalPartyMember, ColorSwatch, DressLength, DressSize, LengthOption, ProductAddOn } from '../types';
 import { COLOR_SWATCHES, LENGTH_OPTIONS, PRODUCTS, STANDARD_ADD_ONS, COMPANY_DETAILS } from '../data/products';
 import { CURRENCIES } from '../utils/order';
 
 interface BridalPartyBuilderProps {
   isOpen: boolean;
   onClose: () => void;
-  currency: Currency;
+  currency?: any;
   onAddAllToCart: (items: Array<{
     productId: string;
     productName: string;
@@ -26,14 +26,13 @@ interface BridalPartyBuilderProps {
 export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
   isOpen,
   onClose,
-  currency,
   onAddAllToCart,
 }) => {
   if (!isOpen) return null;
 
   const [brideName, setBrideName] = useState('');
   const [weddingDate, setWeddingDate] = useState('');
-  const [themeColorId, setThemeColorId] = useState('emerald-green');
+  const [themeColorId, setThemeColorId] = useState('blush-pink');
 
   const [members, setMembers] = useState<BridalPartyMember[]>([
     {
@@ -41,7 +40,7 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
       name: 'Sarah (Maid of Honor)',
       role: 'Maid of Honor',
       productId: 'signature-infinity-dress',
-      colorId: 'emerald-green',
+      colorId: 'blush-pink',
       size: 'M (36-38)',
       length: 'maxi',
       includeBandeau: true,
@@ -52,7 +51,7 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
       name: 'Jessica (Bridesmaid)',
       role: 'Bridesmaid',
       productId: 'signature-infinity-dress',
-      colorId: 'emerald-green',
+      colorId: 'blush-pink',
       size: 'S (32-34)',
       length: 'maxi',
       includeBandeau: false,
@@ -63,7 +62,7 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
       name: 'Thandi (Bridesmaid)',
       role: 'Bridesmaid',
       productId: 'signature-infinity-dress',
-      colorId: 'emerald-green',
+      colorId: 'blush-pink',
       size: 'L (40-42)',
       length: 'maxi',
       includeBandeau: true,
@@ -71,7 +70,7 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
     },
   ]);
 
-  const currencyFormatter = CURRENCIES[currency].format;
+  const currencyFormatter = CURRENCIES['ZAR'].format;
 
   const addMember = () => {
     const newId = (members.length + 1).toString();
@@ -196,32 +195,32 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
   return (
     <div
       id="bridal-suite-modal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/85 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="relative bg-stone-900 text-stone-100 rounded-xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-stone-800 shadow-2xl my-auto"
+        className="relative bg-white text-stone-800 rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden border border-rose-100 shadow-2xl my-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 sm:p-6 bg-stone-950 border-b border-stone-800 flex items-center justify-between">
+        <div className="p-5 sm:p-6 bg-rose-50/70 border-b border-rose-100 flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-amber-400 uppercase tracking-widest mb-1">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-rose-600 uppercase tracking-widest mb-1">
+              <Sparkles className="w-4 h-4 text-rose-500" />
               <span>Coordinated Bridal Suite</span>
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
               Bridal Party Group Order Builder
             </h2>
-            <p className="text-xs text-stone-300 mt-1">
-              Configure each bridesmaid’s individual size, length, and style in one synchronized group order with guaranteed matching dye-lots.
+            <p className="text-xs text-stone-600 mt-1">
+              Configure each bridesmaid’s individual size, length, and style in one synchronized order with guaranteed matching dye-lots.
             </p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full bg-stone-900 text-stone-400 hover:text-white transition-colors"
+            className="p-2 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -229,37 +228,37 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
         </div>
 
         {/* Top Wedding Meta Bar */}
-        <div className="p-4 bg-stone-950/80 border-b border-stone-800/80 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div className="p-4 bg-rose-50/40 border-b border-rose-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           <div>
-            <label className="block text-stone-400 mb-1">Bride / Organizer Name</label>
+            <label className="block text-stone-600 font-semibold mb-1">Bride / Organizer Name</label>
             <input
               type="text"
               placeholder="e.g. Jessica Smith"
               value={brideName}
               onChange={(e) => setBrideName(e.target.value)}
-              className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none text-xs"
+              className="w-full bg-white rounded-lg px-3 py-1.5 text-stone-900 border border-rose-200 focus:border-rose-500 focus:outline-none text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-stone-400 mb-1">Wedding Date</label>
+            <label className="block text-stone-600 font-semibold mb-1">Wedding Date</label>
             <input
               type="date"
               value={weddingDate}
               onChange={(e) => setWeddingDate(e.target.value)}
-              className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none text-xs"
+              className="w-full bg-white rounded-lg px-3 py-1.5 text-stone-900 border border-rose-200 focus:border-rose-500 focus:outline-none text-xs"
             />
           </div>
 
           <div>
-            <label className="block text-stone-400 mb-1">Theme Color Preset</label>
+            <label className="block text-stone-600 font-semibold mb-1">Theme Color Preset</label>
             <select
               value={themeColorId}
               onChange={(e) => {
                 setThemeColorId(e.target.value);
                 setMembers(members.map((m) => ({ ...m, colorId: e.target.value })));
               }}
-              className="w-full bg-stone-800 rounded px-2.5 py-1.5 text-white border border-stone-700 focus:border-amber-400 focus:outline-none text-xs"
+              className="w-full bg-white rounded-lg px-3 py-1.5 text-stone-900 border border-rose-200 focus:border-rose-500 focus:outline-none text-xs"
             >
               {COLOR_SWATCHES.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -270,16 +269,15 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
           </div>
         </div>
 
-        {/* Bulk Discount Alert */}
-        <div className="px-5 py-2.5 bg-amber-950/40 border-b border-amber-500/30 flex items-center justify-between text-xs text-amber-200">
+        {/* Bulk Discount Alert Banner */}
+        <div className="px-5 py-2.5 bg-rose-100/60 border-b border-rose-200 flex items-center justify-between text-xs text-rose-900">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-amber-400" />
+            <CheckCircle2 className="w-4 h-4 text-rose-600" />
             <span>
-              <strong>Bulk Savings:</strong> 5+ dresses = 10% OFF | 8+ dresses = 15% OFF!
+              <strong>Bridal Savings:</strong> 5+ dresses = 10% OFF | 8+ dresses = 15% OFF!
             </span>
           </div>
-          <span className="font-bold text-amber-300">
-            Current Tier:{' '}
+          <span className="font-bold text-rose-700">
             {discountRate > 0 ? `${discountRate * 100}% Discount Applied` : `${5 - totalDresses} more for 10% OFF`}
           </span>
         </div>
@@ -289,18 +287,18 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
           {members.map((member, index) => (
             <div
               key={member.id}
-              className="p-4 rounded-lg bg-stone-950 border border-stone-800/90 space-y-3 relative group"
+              className="p-4 rounded-xl bg-rose-50/30 border border-rose-100 space-y-3 relative group shadow-2xs"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-stone-800 text-stone-300 font-bold text-xs flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-rose-500 text-white font-bold text-xs flex items-center justify-center">
                     {index + 1}
                   </span>
                   <input
                     type="text"
                     value={member.name}
                     onChange={(e) => updateMember(member.id, { name: e.target.value })}
-                    className="bg-transparent font-bold text-sm text-white border-b border-transparent focus:border-amber-400 focus:outline-none px-1"
+                    className="bg-transparent font-bold text-sm text-stone-900 border-b border-transparent focus:border-rose-500 focus:outline-none px-1"
                     placeholder="Enter name (e.g. Sarah - MOH)"
                   />
                 </div>
@@ -309,7 +307,7 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
                   <button
                     type="button"
                     onClick={() => removeMember(member.id)}
-                    className="text-stone-500 hover:text-red-400 p-1 transition-colors"
+                    className="text-stone-400 hover:text-red-500 p-1 transition-colors"
                     title="Remove bridesmaid"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -320,11 +318,11 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                 {/* Dress Style */}
                 <div>
-                  <label className="block text-[11px] text-stone-400 mb-1">Dress Model</label>
+                  <label className="block text-[11px] text-stone-500 mb-1 font-semibold">Dress Model</label>
                   <select
                     value={member.productId}
                     onChange={(e) => updateMember(member.id, { productId: e.target.value })}
-                    className="w-full bg-stone-900 rounded p-2 text-white border border-stone-700"
+                    className="w-full bg-white rounded-lg p-2 text-stone-900 border border-rose-200"
                   >
                     {PRODUCTS.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -336,11 +334,11 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
 
                 {/* Color */}
                 <div>
-                  <label className="block text-[11px] text-stone-400 mb-1">Color Swatch</label>
+                  <label className="block text-[11px] text-stone-500 mb-1 font-semibold">Color Swatch</label>
                   <select
                     value={member.colorId}
                     onChange={(e) => updateMember(member.id, { colorId: e.target.value })}
-                    className="w-full bg-stone-900 rounded p-2 text-white border border-stone-700"
+                    className="w-full bg-white rounded-lg p-2 text-stone-900 border border-rose-200"
                   >
                     {COLOR_SWATCHES.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -352,11 +350,11 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
 
                 {/* Size */}
                 <div>
-                  <label className="block text-[11px] text-stone-400 mb-1">Size</label>
+                  <label className="block text-[11px] text-stone-500 mb-1 font-semibold">Size</label>
                   <select
                     value={member.size}
                     onChange={(e) => updateMember(member.id, { size: e.target.value as DressSize })}
-                    className="w-full bg-stone-900 rounded p-2 text-white border border-stone-700"
+                    className="w-full bg-white rounded-lg p-2 text-stone-900 border border-rose-200"
                   >
                     {sizes.map((s) => (
                       <option key={s} value={s}>
@@ -368,11 +366,11 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
 
                 {/* Length */}
                 <div>
-                  <label className="block text-[11px] text-stone-400 mb-1">Length</label>
+                  <label className="block text-[11px] text-stone-500 mb-1 font-semibold">Length</label>
                   <select
                     value={member.length}
                     onChange={(e) => updateMember(member.id, { length: e.target.value as DressLength })}
-                    className="w-full bg-stone-900 rounded p-2 text-white border border-stone-700"
+                    className="w-full bg-white rounded-lg p-2 text-stone-900 border border-rose-200"
                   >
                     <option value="maxi">Maxi / Floor Length (110cm)</option>
                     <option value="midi">Midi Length (80cm)</option>
@@ -384,12 +382,12 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
 
               {/* Bandeau Checkbox */}
               <div className="flex items-center gap-2 pt-1">
-                <label className="flex items-center gap-2 text-xs text-stone-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-stone-700 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={member.includeBandeau}
                     onChange={(e) => updateMember(member.id, { includeBandeau: e.target.checked })}
-                    className="rounded border-stone-700 text-amber-500 focus:ring-0"
+                    className="rounded border-rose-300 text-rose-600 focus:ring-0"
                   />
                   <span>Add Matching Bandeau / Tube Top (+R95) for bra coverage</span>
                 </label>
@@ -401,25 +399,25 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
           <button
             type="button"
             onClick={addMember}
-            className="w-full py-3 rounded-lg border-2 border-dashed border-stone-700 hover:border-amber-400/60 text-stone-300 hover:text-amber-300 text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 bg-stone-950/40"
+            className="w-full py-3 rounded-xl border-2 border-dashed border-rose-200 hover:border-rose-400 text-rose-700 text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 bg-rose-50/40"
           >
-            <UserPlus className="w-4 h-4" />
+            <UserPlus className="w-4 h-4 text-rose-600" />
             <span>+ Add Another Bridesmaid</span>
           </button>
         </div>
 
         {/* Footer Summary & Actions */}
-        <div className="p-5 sm:p-6 bg-stone-950 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-5 sm:p-6 bg-rose-50/70 border-t border-rose-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <div className="text-xs text-stone-400">
+            <div className="text-xs text-stone-500">
               Total: {totalDresses} Bridesmaid Dress{totalDresses > 1 ? 'es' : ''}
               {discountAmountZar > 0 && (
-                <span className="text-emerald-400 ml-2 font-medium">
-                  (Includes {discountRate * 100}% Bridal Discount: -{currencyFormatter(discountAmountZar)})
+                <span className="text-emerald-700 ml-2 font-medium">
+                  (Includes {discountRate * 100}% Discount: -{currencyFormatter(discountAmountZar)})
                 </span>
               )}
             </div>
-            <div className="text-2xl font-bold text-amber-300 font-serif">
+            <div className="text-2xl font-bold text-stone-900 font-serif">
               {currencyFormatter(finalTotalZar)}
             </div>
           </div>
@@ -428,19 +426,19 @@ export const BridalPartyBuilder: React.FC<BridalPartyBuilderProps> = ({
             <button
               type="button"
               onClick={handleApplyToCart}
-              className="w-full sm:w-auto px-6 py-3 rounded bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 shadow-md"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
-              <ShoppingBag className="w-4 h-4 text-stone-950" />
+              <ShoppingBag className="w-4 h-4 text-white" />
               <span>Add All To Cart ({totalDresses})</span>
             </button>
 
             <button
               type="button"
               onClick={handleWhatsAppBridalParty}
-              className="w-full sm:w-auto px-6 py-3 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs tracking-wider uppercase border border-emerald-500/50 transition-colors flex items-center justify-center gap-2 shadow-md"
+              className="w-full sm:w-auto px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 shadow-xs"
             >
               <MessageCircle className="w-4 h-4 text-white" />
-              <span>Send Bridal Suite to WhatsApp</span>
+              <span>Send Suite to WhatsApp</span>
             </button>
           </div>
         </div>
