@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart, Palette, ShieldCheck } from 'lucide-react';
+import { X, Sparkles, Check, Ruler, ShoppingBag, MessageCircle, Heart, Palette, ShieldCheck, RefreshCw } from 'lucide-react';
 import { ColorSwatch, DressSize, Product } from '../types';
 import { COLOR_SWATCHES, LENGTH_OPTIONS, COMPANY_DETAILS } from '../data/products';
 import { CURRENCIES } from '../utils/order';
@@ -44,6 +44,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const unitPrice = product.basePriceZar;
   const totalPrice = unitPrice * quantity;
 
+  const isFrontView = activeImage === product.images.front;
+  const isClaire = product.id.includes('claire') || product.name.toLowerCase().includes('claire');
+
   const handleAddToCart = () => {
     onAddToCart({
       productId: product.id,
@@ -61,7 +64,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   };
 
   const handleDirectWhatsApp = () => {
-    const text = `Hello! I would like to order the *${product.name}*:\n\n• Selected Fabric Color: ${selectedColor.name}\n• Size: ${selectedSize === 'Custom Measurements' && customBustWaist ? `Custom (${customBustWaist})` : selectedSize}\n• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
+    const text = `Hello! I would like to order the *${product.name}*:\n\n• Selected Dress Colour: ${selectedColor.name}\n• Size: ${selectedSize === 'Custom Measurements' && customBustWaist ? `Custom (${customBustWaist})` : selectedSize}\n• Quantity: ${quantity}\n• Price: ${currencyFormatter(totalPrice)}\n\nPlease advise delivery and banking details.`;
     const url = `https://wa.me/${COMPANY_DETAILS.whatsappRaw}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
@@ -80,7 +83,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   return (
     <div
       id="product-modal-backdrop"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-stone-900/60 backdrop-blur-md overflow-y-auto w-full max-w-[100vw]"
       onClick={onClose}
     >
       <div
@@ -88,10 +91,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 bg-rose-50/60 border-b border-rose-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-rose-50/60 border-b border-rose-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-rose-500" />
-            <h2 className="font-serif text-lg sm:text-xl font-bold text-stone-900">
+            <Sparkles className="w-4 h-4 text-rose-500 shrink-0" />
+            <h2 className="font-serif text-base sm:text-xl font-bold text-stone-900 truncate">
               Customize Your {product.name}
             </h2>
           </div>
@@ -99,7 +102,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors"
+            className="p-1.5 rounded-full text-stone-400 hover:text-stone-800 hover:bg-rose-100 transition-colors shrink-0"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -108,10 +111,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-4 sm:p-6 overflow-y-auto max-h-[75vh] grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Left Column: Natural High-Resolution Product Image with Live Fabric Color Card */}
+          {/* Left Column: Interactive Dress Image with Targeted Real-Time Dress Dyeing Shader */}
           <div className="md:col-span-6 space-y-3">
-            <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-rose-50/40 border border-rose-100 shadow-inner group">
-              {/* Natural Photograph (crisp, true-to-life colors for model, hair, and scene) */}
+            <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden bg-stone-100 border border-rose-100 shadow-inner group">
+              {/* Base High-Resolution Photography */}
               <img
                 src={activeImage}
                 alt={product.name}
@@ -119,18 +122,101 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 referrerPolicy="no-referrer"
               />
 
-              {/* Floating Dedicated Selected Fabric Swatch Card */}
-              <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md rounded-xl p-3 border border-rose-200/80 shadow-md flex items-center justify-between gap-3">
+              {/* Precise SVG Dress Silhouette Mask & Blend Layers (Colors ONLY the fabric dress) */}
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <filter id="soft-edge">
+                    <feGaussianBlur stdDeviation="1.2" />
+                  </filter>
+
+                  {/* 1. Claire Model Front View Dress Mask */}
+                  <mask id="claire-front-mask">
+                    <rect width="100" height="100" fill="black" />
+                    {/* Bodice and tiered skirt */}
+                    <path
+                      d="M 37,36 C 43,40 50,40 57,36 L 62,44 C 63,52 61,56 59,58 L 68,70 L 84,93 C 54,98 22,96 20,93 L 30,70 L 33,58 C 31,52 32,44 34,36 Z"
+                      fill="white"
+                      filter="url(#soft-edge)"
+                    />
+                    {/* Protect Bouquet Flowers & Hands */}
+                    <ellipse cx="59" cy="65" rx="8.5" ry="7.5" fill="black" filter="url(#soft-edge)" />
+                    {/* Protect Neckline Skin & Face */}
+                    <ellipse cx="48" cy="31" rx="8" ry="6" fill="black" filter="url(#soft-edge)" />
+                  </mask>
+
+                  {/* 2. Claire Model Back View Dress Mask */}
+                  <mask id="claire-back-mask">
+                    <rect width="100" height="100" fill="black" />
+                    <path
+                      d="M 34,36 C 48,42 56,42 66,36 L 68,52 C 63,56 60,60 59,62 L 77,93 C 50,97 24,95 23,93 L 36,62 C 34,56 32,50 31,44 Z"
+                      fill="white"
+                      filter="url(#soft-edge)"
+                    />
+                    {/* Protect Back Open Skin */}
+                    <polygon points="42,34 58,34 50,46" fill="black" filter="url(#soft-edge)" />
+                  </mask>
+
+                  {/* 3. Studio Mannequin Gown Mask (Classic Mesh, Kiara, Vintage Wrap, Signature) */}
+                  <mask id="studio-gown-mask">
+                    <rect width="100" height="100" fill="black" />
+                    <path
+                      d="M 37,18 C 50,22 55,22 64,18 L 68,40 C 64,48 60,52 59,54 L 80,94 C 50,99 22,97 20,94 L 38,54 C 36,46 32,38 31,30 Z"
+                      fill="white"
+                      filter="url(#soft-edge)"
+                    />
+                  </mask>
+                </defs>
+
+                {/* Multiply & Color Layers to Dye the Dress Fabric Realistically */}
+                {selectedColor.id !== 'pure-ivory' && (
+                  <>
+                    <rect
+                      width="100"
+                      height="100"
+                      fill={selectedColor.hex}
+                      mask={`url(#${isFrontView ? (isClaire ? 'claire-front-mask' : 'studio-gown-mask') : 'claire-back-mask'})`}
+                      style={{ mixBlendMode: 'multiply', opacity: 0.86 }}
+                      className="transition-all duration-500"
+                    />
+                    <rect
+                      width="100"
+                      height="100"
+                      fill={selectedColor.hex}
+                      mask={`url(#${isFrontView ? (isClaire ? 'claire-front-mask' : 'studio-gown-mask') : 'claire-back-mask'})`}
+                      style={{ mixBlendMode: 'color', opacity: 0.72 }}
+                      className="transition-all duration-500"
+                    />
+                  </>
+                )}
+              </svg>
+
+              {/* Floating Live Dress Colour Badge */}
+              <div className="absolute top-3 left-3 z-20">
+                <div
+                  className="px-3 py-1 rounded-full text-[11px] font-bold text-white shadow-md flex items-center gap-1.5 backdrop-blur-md border border-white/40"
+                  style={{ backgroundColor: selectedColor.hex }}
+                >
+                  <Palette className="w-3 h-3 text-white" />
+                  <span>{selectedColor.name}</span>
+                </div>
+              </div>
+
+              {/* Bottom Live Selected Fabric Swatch Card */}
+              <div className="absolute bottom-3 left-3 right-3 z-20 bg-white/95 backdrop-blur-md rounded-xl p-2.5 border border-rose-200 shadow-md flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
-                    className="w-8 h-8 rounded-full border-2 border-white shadow-sm shrink-0 flex items-center justify-center ring-1 ring-stone-300"
+                    className="w-7 h-7 rounded-full border-2 border-white shadow-sm shrink-0 flex items-center justify-center ring-1 ring-stone-300 transition-colors duration-300"
                     style={{ backgroundColor: selectedColor.hex }}
                   >
                     <Check className="w-3.5 h-3.5 text-white drop-shadow-md" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[10px] font-bold text-rose-600 uppercase tracking-wider block truncate">
-                      Selected Fabric Color
+                    <span className="text-[9px] font-bold text-rose-600 uppercase tracking-wider block truncate">
+                      Live Dress Dye Preview
                     </span>
                     <span className="text-xs font-bold text-stone-900 block truncate">
                       {selectedColor.name}
@@ -186,7 +272,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           </div>
 
           {/* Right Column: Customization (Colors & Size) */}
-          <div className="md:col-span-6 space-y-6 text-xs">
+          <div className="md:col-span-6 space-y-5 text-xs">
             {/* 1. Color Swatches Selection */}
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -195,6 +281,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 </label>
               </div>
 
+              {/* Swatches Grid */}
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-52 overflow-y-auto p-1.5 bg-rose-50/30 rounded-xl border border-rose-100">
                 {COLOR_SWATCHES.map((swatch) => {
                   const isSelected = selectedColor.id === swatch.id;
@@ -270,7 +357,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               )}
             </div>
 
-            {/* Quality Note */}
+            {/* Quality & Length Note */}
             <div className="p-3.5 rounded-xl bg-rose-50/50 border border-rose-100 text-stone-600 space-y-1">
               <span className="font-bold text-stone-900 text-xs block">
                 Standard Maxi Length (110cm Floor Drape)
@@ -283,7 +370,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 bg-rose-50/80 border-t border-rose-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 bg-rose-50/80 border-t border-rose-100 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-4">
             <div>
               <span className="text-[10px] text-stone-500 uppercase tracking-wider block">
@@ -299,7 +386,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <button
                 type="button"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="text-stone-500 hover:text-stone-900 font-bold px-1"
+                className="text-stone-500 hover:text-stone-900 font-bold px-1 cursor-pointer"
               >
                 -
               </button>
@@ -307,7 +394,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <button
                 type="button"
                 onClick={() => setQuantity(quantity + 1)}
-                className="text-stone-500 hover:text-stone-900 font-bold px-1"
+                className="text-stone-500 hover:text-stone-900 font-bold px-1 cursor-pointer"
               >
                 +
               </button>
